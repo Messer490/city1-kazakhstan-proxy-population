@@ -1,0 +1,9 @@
+city_name,completeness_score,completeness_label,critical_coverage_score,optional_coverage_score,density_quality_score,warning_quality_score,osm_warning_count,qa_warning_count,building_zero_share,road_zero_share,poi_zero_share,total_floor_area_zero_share,bus_stop_zero_share,park_zero_share,schools_zero_share,hospitals_zero_share,retail_zero_share,critical_nonempty_layers,optional_nonempty_layers,source_file
+uralsk,79.653,good,0.899,0.588,0.697,1.0,0,0,0.302632,0.302632,0.0,0.302632,0.728947,0.915789,0.797368,0.881579,0.797368,3,5,uralsk.csv
+ust_kamenogorsk,76.358,good,0.88,0.534,0.643,1.0,0,0,0.349942,0.3708,0.0,0.349942,0.886443,0.954809,0.945539,0.957126,0.913094,3,5,ust_kamenogorsk.csv
+almaty,75.827,good,0.87,0.565,0.616,1.0,0,0,0.37232,0.408707,0.0,0.37232,0.769981,0.895387,0.859324,0.952891,0.874594,3,5,almaty.csv
+taraz,74.367,good,0.869,0.513,0.6,1.0,0,0,0.416306,0.368687,0.0,0.416306,0.974026,0.984848,0.968975,0.966089,0.973304,3,5,taraz.csv
+semey,74.102,good,0.863,0.528,0.589,1.0,0,0,0.412391,0.409487,0.0,0.412391,0.910939,0.954501,0.942885,0.972894,0.942885,3,5,semey.csv
+petropavlovsk,71.058,good,0.836,0.528,0.515,1.0,0,0,0.470408,0.513265,0.0,0.470408,0.927551,0.981633,0.936735,0.965306,0.912245,3,5,petropavlovsk.csv
+shymkent,65.541,moderate,0.799,0.51,0.376,1.0,0,0,0.663697,0.544847,0.0,0.663697,0.965985,0.986435,0.974084,0.987649,0.982183,3,5,shymkent.csv
+astana,65.014,moderate,0.789,0.527,0.359,1.0,0,0,0.655917,0.611287,0.0,0.655917,0.906709,0.951627,0.938958,0.978405,0.952491,3,5,astana.csv

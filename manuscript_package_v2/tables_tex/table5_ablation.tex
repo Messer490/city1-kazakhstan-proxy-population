@@ -1,0 +1,18 @@
+\begin{table}[H]
+\centering
+\small
+\caption{Ablation summary under leave-one-city-out validation. The full frozen feature set remains strongest, while the built-form-only variant is the best non-full configuration.}
+\label{tab:ablation}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Ablation & Features & Raw RMSE & Calibrated RMSE & Calibrated $R^2$ & \shortstack{$\Delta$ RMSE\\vs. full} \\
+\midrule
+Full feature set & 17 & 251.756 & 115.934 & 0.934 & 0.000 \\
+Built-form-only & 9 & 258.999 & 120.656 & 0.929 & 4.722 \\
+Transport-only & 2 & 379.942 & 330.041 & 0.389 & 214.107 \\
+POI/services-only & 5 & 406.750 & 413.785 & -0.315 & 297.851 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

@@ -1,0 +1,125 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{array}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setcounter{table}{0}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+\title{Supplementary Material: City1 v2}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Supplement overview}
+
+This supplement contains the validation-evidence synthesis table, frozen technical appendices, detailed qualitative case panels, additional example surface maps, and expanded supporting tables referenced by the frozen City1 v2 manuscript package.
+
+\section{S1. Validation-Evidence Matrix}
+
+Supplementary Table~S1 summarizes the logic of the frozen validation stack. Its purpose is to make explicit what each layer supports, and just as importantly, what it does not support.
+
+\input{tables_tex/table_s1_validation_evidence_matrix.tex}
+
+\section{S2. City Registry and Coverage}
+
+Supplementary Table~S2 gives the full frozen registry, distinguishes validated baseline cities from smoke-passed or runtime-only examples, and records the provenance route used for official totals.
+
+\input{tables_tex/table_s2_city_registry.tex}
+
+\section{S3. Frozen Feature Inventory and Weak-Target Construction}
+
+Supplementary Table~S3 lists the exact frozen model features by family and indicates whether each feature participates directly in the default weak-label construction.
+
+\input{tables_tex/table_s3_feature_inventory.tex}
+
+Let $x_{ik}$ denote feature $k$ for cell $i$, and let $K$ denote the weak-label feature subset available in city $c$. In the frozen workflow, negative values are clipped before transformation, the remaining values are log-transformed with $\log(1+x)$, and each feature is min-max normalized before fixed weights are applied:
+\[
+s_i = \sum_{k \in K} w_k \cdot \mathrm{MinMax}\!\left(\log\!\left(1 + \max(x_{ik}, 0)\right)\right).
+\]
+To prevent zero-share collapse, the proxy score is shifted by a small constant $\epsilon$ before allocation:
+\[
+\tilde{s}_i = s_i + \epsilon,
+\qquad
+q_i = \frac{\tilde{s}_i}{\sum_{j \in c} \tilde{s}_j},
+\qquad
+y_i^{\mathrm{weak}} = q_i \cdot P_c.
+\]
+Here $P_c$ is the official total for city $c$. The resulting weak target is therefore an officially anchored proxy allocation rather than a ground-truth cell label.
+
+\input{tables_tex/table_s4_weak_label_weights.tex}
+
+\section{S4. Calibration Rule and Fallback Behavior}
+
+For city $c$, raw model predictions are rescaled to the official total through:
+\[
+\hat{y}_i^{\mathrm{cal}} = \hat{y}_i \cdot \frac{P_c}{\sum_{j \in c} \hat{y}_j}.
+\]
+If the within-city prediction sum is non-positive, the frozen v2 workflow falls back to a uniform allocation across cells in that city. This fallback is part of the implemented method and ensures that calibration remains well-defined even under degenerate raw output.
+
+\section{S5. Detailed qualitative cases}
+
+The detailed curated hotspot and coldspot panels for Almaty and Astana are retained in the supplement by default because they support the main-paper qualitative overview without overloading the core narrative.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/figure_qualitative_cases_almaty.png}
+    \caption{Almaty curated cases}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/figure_qualitative_cases_astana.png}
+    \caption{Astana curated cases}
+\end{subfigure}
+\caption{Detailed qualitative hotspot and coldspot cases retained as supplement material. These panels are interpreted as plausibility evidence rather than as cell-level truth validation.}
+\end{figure}
+
+\section{S6. Example surface maps}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/figure_surface_almaty.png}
+    \caption{Almaty surface example}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/figure_surface_semey.png}
+    \caption{Semey surface example}
+\end{subfigure}
+\caption{Additional example proxy population surfaces retained as supplementary visual material.}
+\end{figure}
+
+\section{S7. Expanded supporting tables}
+
+The following CSV-derived tables are retained as supplement material:
+
+\begin{itemize}
+\item \texttt{qa\_city\_summary\_table.csv}
+\item \texttt{grid\_size\_city\_recommendations\_table.csv}
+\item \texttt{external\_benchmark\_metrics\_table.csv}
+\item \texttt{ablation\_selected\_extras\_table.csv}
+\item \texttt{qualitative\_validation\_case\_table.csv}
+\end{itemize}
+
+\end{document}

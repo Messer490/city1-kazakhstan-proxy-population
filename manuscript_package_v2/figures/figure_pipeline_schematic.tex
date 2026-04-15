@@ -1,0 +1,28 @@
+\begin{tikzpicture}[
+    node distance=1.6cm and 1.2cm,
+    every node/.style={font=\small},
+    box/.style={draw, rounded corners, align=center, minimum width=3.1cm, minimum height=1.1cm},
+    data/.style={box, fill=blue!8},
+    process/.style={box, fill=green!8},
+    output/.style={box, fill=orange!10},
+    note/.style={draw, dashed, rounded corners, align=center, inner sep=6pt},
+    arrow/.style={-{Latex[length=2.5mm]}, thick}
+]
+
+\node[data] (totals) {Official city totals\\(calibration anchors)};
+\node[data, right=of totals] (osm) {OSM-derived features\\buildings, roads, POIs, floor area};
+\node[process, below=of osm] (weak) {Weak target construction\\log transform, normalization, weighted proxy score};
+\node[process, below=of weak] (model) {Supervised learning\\`random\_forest' on `500 m' grid};
+\node[output, below=of model] (calib) {Calibration to official totals\\final proxy population surface};
+\node[note, left=of model, xshift=-0.4cm] (valid) {Validation layers\\LOCO\\Spatial block CV\\Grid benchmark\\District benchmark\\External benchmark\\Ablation\\Qualitative validation};
+\node[note, right=of model, xshift=0.4cm] (report) {Reporting layers\\paper\_v2\_baseline\\summary tables\\figures and narrative outputs};
+
+\draw[arrow] (totals.east) -- (osm.west);
+\draw[arrow] (osm.south) -- (weak.north);
+\draw[arrow] (weak.south) -- (model.north);
+\draw[arrow] (model.south) -- (calib.north);
+\draw[arrow] (totals.south) |- (calib.west);
+\draw[arrow] (valid.east) -- (model.west);
+\draw[arrow] (calib.east) -- (report.west);
+
+\end{tikzpicture}

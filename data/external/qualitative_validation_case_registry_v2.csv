@@ -1,0 +1,19 @@
+city_slug,zone_type,case_id,source_component_id,case_title,interpretation_label,include_in_report,narrative_summary,caution_note
+almaty,coldspot,L1,coldspot_01,South-East Peripheral Open Fringe,peripheral open coldspot,True,Large south-east coldspot has near-zero building and floor-area signal and stays close to zero after calibration which is consistent with a peripheral or open fringe rather than a dense residential area.,Low values can still be amplified by sparse-edge mapping effects in low-activity cells.
+almaty,coldspot,,coldspot_02,South-Central Coldspot,,False,,
+almaty,coldspot,,coldspot_03,South-Central Coldspot,,False,,
+almaty,coldspot,,coldspot_04,South-East Coldspot,,False,,
+almaty,coldspot,L2,coldspot_05,Eastern Sparse Edge,sparsely built edge coldspot,True,Small eastern coldspot remains low despite calibration and shows negligible built-form features which is consistent with a sparse edge rather than an underpredicted dense block.,Because it is a compact component local OSM sparsity could still matter.
+almaty,hotspot,H1,hotspot_01,Central Mixed-Use Core,central mixed-use hotspot,True,Largest high-population component sits in the central urban fabric and coincides with very high building and floor-area intensity which is consistent with a dense mixed-use core.,This large merged hotspot may combine several adjacent dense districts rather than a single neighborhood.
+almaty,hotspot,,hotspot_02,North-East Hotspot,,False,,
+almaty,hotspot,,hotspot_03,North-East Hotspot,,False,,
+almaty,hotspot,H2,hotspot_04,South-West Dense Residential Corridor,dense residential hotspot,True,Secondary hotspot appears as a compact south-west cluster with high mean predicted population and strong built-form intensity which is plausible for a dense residential corridor rather than isolated noise.,Interpretation is based on morphology only and may still mix residential and service cells.
+almaty,hotspot,,hotspot_05,East Hotspot,,False,,
+astana,coldspot,L1,coldspot_01,South-Central Open Belt,open or weak-built coldspot,True,The main south-central coldspot shows negligible building intensity and very low predicted population fitting an open or weakly built belt within the city footprint.,Astana's moderate OSM completeness means some low-intensity cells may still reflect partial mapping.
+astana,coldspot,,coldspot_02,South-Central Coldspot,,False,,
+astana,coldspot,,coldspot_03,South-Central Coldspot,,False,,
+astana,coldspot,L2,coldspot_04,North-Central Low-Intensity Gap,low-intensity internal gap,True,This north-central coldspot remains low across a contiguous component and aligns with weak built-form signal making it a plausible internal low-intensity gap rather than pure noise.,Moderate completeness means internal gaps should not be overclaimed as fully empty land.
+astana,coldspot,,coldspot_05,South-West Coldspot,,False,,
+astana,hotspot,H1,hotspot_01,Central Built-Form Core,central built-form hotspot,True,The dominant Astana hotspot forms a large central cluster with very high built-form intensity which is consistent with the city's main structured urban core.,This very large component may merge multiple adjacent dense zones into one case.
+astana,hotspot,H2,hotspot_02,North-West Secondary Cluster,secondary dense hotspot,True,A smaller north-west hotspot survives outside the main core and still carries a strong built-form signal suggesting a meaningful secondary dense cluster rather than random scatter.,This case is compact so it should be read more cautiously than the main core.
+astana,hotspot,,hotspot_03,South-Central Hotspot,,False,,

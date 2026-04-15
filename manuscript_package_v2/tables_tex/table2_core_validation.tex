@@ -1,0 +1,19 @@
+\begin{table}[H]
+\centering
+\caption{Core model and grid validation summary. The table combines the main model-comparison results with the grid-size benchmark used to lock the frozen 500 m production configuration.}
+\label{tab:core-validation}
+\begin{tabular}{llllll}
+\toprule
+Component & Setting & Protocol / grid & Calibrated RMSE & Calibrated $R^2$ & Score \\
+\midrule
+Model & random forest & LOCO & 115.934 & 0.934 & -- \\
+Model & ridge & LOCO & 7609.928 & -347.088 & -- \\
+Model & random forest & spatial block & 76.301 & 0.980 & -- \\
+Model & ridge & spatial block & 1039.817 & -2.690 & -- \\
+\midrule
+Grid & frozen default & 500 m & -- & -- & 0.248572 \\
+Grid & high detail & 250 m & -- & -- & 1.172821 \\
+Grid & coarse & 1000 m & -- & -- & 1.091467 \\
+\bottomrule
+\end{tabular}
+\end{table}

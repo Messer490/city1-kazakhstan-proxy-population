@@ -1,0 +1,70 @@
+\section{Method}
+
+\subsection{Overview}
+
+City1 v2 is designed as a reproducible open-data pipeline for constructing a calibrated intra-urban proxy population surface under label scarcity. The method links four stages: (i) extraction of spatial features from open geodata on a fixed grid, (ii) construction of a weak target from transformed proxy signals, (iii) supervised learning on the weak target, and (iv) calibration of model outputs to official city population totals. The resulting surface is intended to provide a bounded and reproducible baseline for intra-urban analysis rather than a true reconstruction of census counts at the grid-cell level.
+
+The frozen production configuration of v2 uses a \emph{random forest} model on a \emph{500 m} grid in \emph{calibrated-only} mode. This configuration is not presented as universally optimal in all conceivable settings; rather, it is the fixed baseline selected from the frozen v2 evidence stack and used consistently throughout the manuscript.
+
+\subsection{Spatial Unit and Feature Extraction}
+
+The study area of each city is partitioned into a regular grid, and all downstream modeling is performed at the cell level. In the frozen baseline, the main production grid is 500 m, which serves as the common spatial unit for feature aggregation, weak-target construction, prediction, and reporting.
+
+Input features are derived from OpenStreetMap and grouped into interpretable urban proxy families. These include built-form signals, floor-area-related signals, transport-related signals, and point-of-interest or service-access signals. In practical terms, built-form and floor-area variables act as proxies for horizontal and vertical development intensity, transport variables provide a coarse proxy for corridor structure and accessibility, and point-of-interest or service variables capture activity concentration. The purpose of these variables is not to encode direct census truth, which is unavailable at the target resolution, but to provide a transparent and reproducible open-data basis for proxy population modeling. The exact frozen feature inventory and its grouping by family are retained in Supplementary Table~S3.
+
+All features are computed reproducibly from the frozen v2 pipeline and aligned to the same cell geometry within each city. This ensures that weak-target construction, supervised learning, calibration, and validation all operate on a consistent spatial representation.
+
+\subsection{Weak Target Construction}
+
+Because true grid-level census labels are unavailable, City1 v2 adopts weak supervision. Instead of training against an observed population count per cell, the system first builds a proxy score intended to reflect relative intra-urban population concentration. This score is constructed from the OSM-derived feature set after transformation and normalization steps designed to reduce scale imbalance across variables and cities.
+
+Let $x_{ik}$ denote feature $k$ for grid cell $i$, and let $K$ denote the subset of frozen weak-label features available in a given city. In the implemented workflow, negative values are clipped before transformation and the feature stack is log-transformed with $\log(1 + x)$ and then min-max normalized by feature. A semi-formal expression for the resulting proxy score is:
+\[
+s_i = \sum_{k \in K} w_k \cdot \mathrm{MinMax}\!\left(\log\!\left(1 + \max(x_{ik}, 0)\right)\right),
+\]
+where $w_k$ are fixed weak-label weights from the frozen v2 configuration.
+
+To prevent zero-share collapse at allocation time, the score is then adjusted by a small constant $\epsilon$:
+\[
+\tilde{s}_i = s_i + \epsilon,
+\qquad
+q_i = \frac{\tilde{s}_i}{\sum_{j \in c} \tilde{s}_j},
+\qquad
+y_i^{\mathrm{weak}} = q_i \cdot P_c,
+\]
+where $P_c$ is the official total for city $c$. The resulting score should therefore be interpreted as a relative spatial prior over where population is more or less likely to concentrate within a city; it is not treated as ground truth.
+
+The frozen weak-label weights used in this construction are retained in Supplementary Table~S4 so that the semi-formal description in the main text remains directly traceable to the implemented v2 workflow.
+
+To obtain a weak training target, the proxy score is combined with the official city population total. In effect, the official total anchors the city-level mass, while the proxy score distributes that mass across cells according to the open-data evidence available in the feature layer. This produces a city-consistent weak target suitable for supervised learning while preserving the central methodological constraint of the paper: the model is trained on a calibrated proxy target rather than on true cell-level census observations.
+
+\subsection{Supervised Learning on Weak Targets}
+
+A supervised regression model is trained to map cell-level features to the weak target surface. The role of the learning stage is not to discover a hidden census truth ex nihilo, but to learn a stable and transferable relationship between the open-data feature space and the weakly supervised proxy distribution.
+
+In the frozen v2 baseline, the selected production model is \emph{random forest}. This choice reflects the fixed evidence stack reported in the manuscript and is retained for the final production identity of the system. A linear \emph{ridge} baseline is evaluated as a comparator in the validation stage, but it is not used for the frozen production surface. The model is trained and evaluated strictly within the frozen v2 workflow so that all reported figures and tables remain traceable to the same reproducible package.
+
+\subsection{Calibration to Official City Totals}
+
+Model outputs are treated as relative cell-level predictions prior to final calibration. To ensure city-level consistency, predictions are rescaled so that the sum of all cell values within a city matches the corresponding official population total. This calibration step is a core part of the method, not an optional cosmetic adjustment. It guarantees that the final surface remains anchored to the official total while allowing the model to express intra-urban spatial variation through the learned proxy structure.
+
+For city $c$, if the non-negative prediction sum is positive, the implemented rescaling rule is:
+\[
+\hat{y}_i^{\mathrm{cal}} = \hat{y}_i \cdot \frac{P_c}{\sum_{j \in c} \hat{y}_j},
+\]
+where $P_c$ is the official city total. If the within-city prediction sum is non-positive, the workflow falls back to a uniform allocation across the cells of that city. This fallback is rarely the informative case, but it is part of the implemented method and ensures that the calibration step remains well-defined even under degenerate raw output.
+
+The calibrated output is therefore interpreted as a \emph{proxy population surface constrained by official city totals}. This distinction is important. Calibration improves coherence at the city level, but it does not convert the product into ground-truth census data at the cell level. Throughout the paper, the calibrated surface is treated as a bounded analytical baseline whose value lies in transparency, reproducibility, and multi-level validation. Supplementary Section~S4 restates this rescaling rule and the implemented fallback behavior in concise appendix form.
+
+\subsection{Frozen Production Identity}
+
+The final v2 system is intentionally frozen to avoid post hoc drift in claims or configuration during manuscript preparation. Its production identity is defined by three choices: \emph{random forest}, \emph{500 m} grid resolution, and \emph{calibrated-only} output. These settings are used consistently in the main narrative and serve as the reference point for the validation framework presented in the following sections.
+
+This frozen framing is central to the paper's contribution. City1 v2 is not introduced as a best-possible truth model, nor as a software demo centered on an interface. It is presented as a reproducible open-data baseline that combines weak supervision, official-total calibration, and multi-level validation for intra-urban analysis in data-scarce urban settings. In the manuscript package, the same frozen workflow is also responsible for the reported tables and figures, so that the narrative, quantitative results, and paper assets remain traceable to a single reproducible v2 evidence stack.
+
+\begin{figure}[H]
+\centering
+\input{figures/figure_pipeline_schematic.tex}
+\caption{Conceptual overview of the City1 v2 pipeline. Official city population totals are used as calibration anchors, while OpenStreetMap-derived built-form, transport, and point-of-interest features provide the open-data input layer. Because true grid-level census labels are unavailable, weak targets are constructed through transformed and weighted proxy signals, followed by supervised learning on a frozen 500 m grid, calibration to official totals, and a multi-level validation/reporting stack. The figure emphasizes that City1 v2 is designed as a calibrated proxy population surface baseline rather than a true cell-level census reconstruction.}
+\label{fig:pipeline}
+\end{figure}

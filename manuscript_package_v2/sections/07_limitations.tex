@@ -1,0 +1,9 @@
+\section{Limitations}
+
+The main limitation of the study is fundamental: true grid-level census labels are unavailable. As a result, City1 v2 relies on weak supervision rather than on direct supervised learning against observed population counts per cell. This limitation cannot be removed rhetorically and should not be obscured by the presence of strong validation results. The output remains a calibrated proxy population surface rather than a ground-truth census product at grid resolution.
+
+The internal administrative evidence layer is also bounded. District benchmark comparison provides useful support where district-level references are available, but it remains partial and heterogeneous across cities. In particular, the district benchmark does not provide uniformly strong evidence across all anchor cities and therefore cannot be interpreted as comprehensive intra-urban truth validation. Likewise, external benchmark agreement against independent gridded products supports structural plausibility rather than definitive correctness.
+
+The system also depends on variable OSM quality across cities. Although the manuscript explicitly tracks OSM completeness as an input-reliability context, differences in coverage and urban-feature richness still affect how confidently some results can be interpreted. This is especially relevant for qualitative reading and for the practical transferability of the baseline across heterogeneous urban settings.
+
+Finally, the frozen v2 system remains calibrated-only and intentionally limited in scope. It does not include uncertainty maps, explainability layers, remote-sensing inputs, or accessibility features. These are meaningful directions for future development, but they are outside the scope of the present paper and should not be retrofitted into the current manuscript through expanded claims.

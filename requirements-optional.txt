@@ -1,0 +1,2 @@
+catboost==1.2.8
+rasterio==1.4.3

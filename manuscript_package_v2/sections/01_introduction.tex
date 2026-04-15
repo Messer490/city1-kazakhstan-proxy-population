@@ -1,0 +1,22 @@
+\section{Introduction}
+
+Spatially explicit intra-urban population surfaces are useful for urban analysis, service planning, disaster exposure assessment, and cross-city comparison. Many practical decisions depend not only on total city population, but also on how population is distributed within the urban fabric. Yet this finer-scale distribution is difficult to estimate in many settings because population data are usually released in aggregated administrative units rather than as grid-level counts. As a result, analysts often require gridded population surfaces for decision-making while lacking true cell-level census labels for direct supervised modeling \cite{Leyk2019,Mennis2009,Stevens2015}.
+
+This challenge is especially acute in data-scarce urban settings. Fine-resolution census microdata are often unavailable, access-restricted, inconsistent across cities, or misaligned with the spatial units required for urban analysis. At the same time, open geospatial data---including buildings, roads, and points of interest---offer a reproducible but indirect description of urban structure. These signals do not reveal true population counts per grid cell, but they can support disciplined proxy modeling when combined with official totals and transparent allocation logic. In this context, the key methodological problem is not exact census reconstruction, but the construction of a useful, calibrated, and reproducible proxy population surface for intra-urban analysis \cite{Leyk2019,WorldPopMethods,GHSL2023}.
+
+A large literature on gridded population mapping has shown the value of top-down redistribution frameworks that combine official counts with ancillary spatial information \cite{Stevens2015,Freire2016,Leyk2019}. However, the methodological requirements of local urban studies remain demanding. In particular, researchers often need a baseline that is transparent, reproducible, and explicit about its limitations, rather than a system that implicitly treats modeled cell values as census-equivalent truth. This need is reinforced in settings where validation itself must be multi-layered because no single benchmark can fully resolve uncertainty at fine spatial scales.
+
+To address this gap, we present City1 v2, a reproducible open-data baseline for calibrated intra-urban proxy population surface modeling in Kazakhstan. City1 v2 combines OpenStreetMap-derived features with weak supervision on a frozen 500\,m grid, learns a proxy distribution through supervised modeling, and calibrates the final output to official city population totals. The resulting surface is evaluated through a multi-level validation framework that includes leave-one-city-out transfer testing, spatial block cross-validation, grid-size benchmarking, OSM completeness assessment, partial internal administrative comparison at the district level, external structural comparison against independent gridded population products, feature-family ablation, and qualitative hotspot/coldspot review. Throughout the paper, the output is interpreted as a city-consistent proxy population surface rather than as ground-truth population per cell.
+
+The contribution of this paper is intentionally bounded. City1 v2 is not introduced as a best-possible truth model and does not claim exact reconstruction of census counts at the grid-cell level. Instead, the manuscript contributes a disciplined baseline designed for data-scarce urban settings, where methodological transparency, reproducibility, and bounded interpretation are at least as important as predictive performance alone.
+
+\paragraph{Contributions.}
+\begin{itemize}
+\item a reproducible open-data pipeline for intra-urban proxy population surface generation;
+\item calibration to official city population totals for city-level consistency;
+\item a multi-level validation framework spanning transferability, within-city robustness, partial internal administrative comparison, external structural comparison, ablation, and qualitative plausibility assessment;
+\item a reproducible manuscript package in which figures, tables, and narrative claims are tied to a frozen evidence stack;
+\item a disciplined baseline framing for intra-urban analysis in data-scarce settings.
+\end{itemize}
+
+The central differentiator of the manuscript is therefore not a claim of best-possible truth recovery, but a claim of disciplined credibility under missing cell-level truth: City1 v2 combines official-total calibration, a frozen open-data workflow, and multi-level validation in a single reproducible baseline package.
