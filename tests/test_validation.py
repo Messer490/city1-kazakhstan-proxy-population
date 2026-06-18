@@ -4,7 +4,7 @@ import unittest
 
 import pandas as pd
 
-from src.city1.validation import validate_city_output, validate_feature_output
+from src.city1.validation import validate_city_output, validate_city_output_v3, validate_feature_output
 
 
 class ValidationTestCase(unittest.TestCase):
@@ -79,6 +79,41 @@ class ValidationTestCase(unittest.TestCase):
         report = validate_city_output(df, "sample")
         codes = {issue.code for issue in report.issues}
         self.assertIn("negative_values", codes)
+
+    def test_v3_output_rejects_invalid_confidence_band(self) -> None:
+        df = pd.DataFrame(
+            {
+                "run_id": ["city1_v3_rf500m_e3_20260618T000000Z"],
+                "model_version": ["city1_v3_rf500m_uncertainty"],
+                "city": ["Semey"],
+                "city_slug": ["semey"],
+                "cell_id": ["Z1"],
+                "centroid_latitude": [43.0],
+                "centroid_longitude": [76.0],
+                "official_city_total": [315382],
+                "calibrated_member_count": [3],
+                "p10": [45.0],
+                "p50": [50.0],
+                "p90": [55.0],
+                "population_estimate_final": [50.0],
+                "uncertainty_width": [10.0],
+                "relative_uncertainty": [0.2],
+                "model_stability_score": [0.8],
+                "osm_completeness_score": [74.0],
+                "osm_completeness_label": ["good"],
+                "osm_support_score": [0.74],
+                "external_agreement_score": [0.5],
+                "internal_support_score": [0.5],
+                "confidence_score": [0.8],
+                "confidence_band": ["unknown"],
+                "hotspot_rank": [1],
+                "hotspot_priority_class": ["high_value_high_confidence"],
+                "district_support_flag": ["not_available"],
+            }
+        )
+        report = validate_city_output_v3(df, "sample_v3")
+        codes = {issue.code for issue in report.issues}
+        self.assertIn("invalid_confidence_band", codes)
 
 
 if __name__ == "__main__":

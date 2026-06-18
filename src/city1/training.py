@@ -34,6 +34,9 @@ class TrainingConfig:
     spatial_block_size_meters: int = 2000
     spatial_block_splits: int = 5
     random_state: int = 42
+    rf_n_estimators: int = 400
+    rf_min_samples_leaf: int = 2
+    rf_n_jobs: int = 1
     use_log_target: bool = True
     min_cities: int = 3
 
@@ -84,6 +87,7 @@ def build_training_dataset(
     totals_lookup: CityTotalsLookup,
     label_config: WeakLabelConfig | None = None,
     required_feature_columns: tuple[str, ...] = MODEL_FEATURE_COLUMNS,
+    allowed_cities: set[str] | None = None,
 ) -> TrainingDatasetBundle:
     weak_label_config = label_config or WeakLabelConfig()
     files = discover_feature_files(features_dir)
@@ -94,9 +98,18 @@ def build_training_dataset(
     warnings: list[str] = []
     skipped_files: list[str] = []
     included_cities: list[str] = []
+    allowed_city_set = (
+        {normalize_city_name(city_name) for city_name in allowed_cities}
+        if allowed_cities
+        else None
+    )
 
     for path in files:
         city_name = city_name_from_filename(path)
+        if allowed_city_set is not None and city_name not in allowed_city_set:
+            warnings.append(f"Skipped {path.name}: city is outside the requested training subset.")
+            skipped_files.append(path.name)
+            continue
         official_population = totals_lookup.get_population(city_name)
         if official_population is None:
             warnings.append(f"Skipped {path.name}: no official population total found for city '{city_name}'.")
@@ -142,7 +155,14 @@ def build_training_dataset(
     )
 
 
-def build_estimator(model_name: str, random_state: int) -> Pipeline:
+def build_estimator(
+    model_name: str,
+    random_state: int,
+    *,
+    rf_n_estimators: int = 400,
+    rf_min_samples_leaf: int = 2,
+    rf_n_jobs: int = 1,
+) -> Pipeline:
     normalized_name = model_name.strip().lower()
 
     if normalized_name == "ridge":
@@ -161,10 +181,10 @@ def build_estimator(model_name: str, random_state: int) -> Pipeline:
                 (
                     "model",
                     RandomForestRegressor(
-                        n_estimators=400,
-                        min_samples_leaf=2,
+                        n_estimators=rf_n_estimators,
+                        min_samples_leaf=rf_min_samples_leaf,
                         random_state=random_state,
-                        n_jobs=1,
+                        n_jobs=rf_n_jobs,
                     ),
                 ),
             ]
@@ -342,7 +362,13 @@ def cross_validate_by_city(
     oof_frames: list[pd.DataFrame] = []
 
     for fold_index, (train_idx, valid_idx) in enumerate(splitter.split(features, target, split_groups), start=1):
-        estimator = build_estimator(config.model_name, config.random_state)
+        estimator = build_estimator(
+            config.model_name,
+            config.random_state,
+            rf_n_estimators=config.rf_n_estimators,
+            rf_min_samples_leaf=config.rf_min_samples_leaf,
+            rf_n_jobs=config.rf_n_jobs,
+        )
         estimator.fit(
             features.iloc[train_idx],
             _transform_target(target.iloc[train_idx], config.use_log_target),
@@ -398,7 +424,13 @@ def train_final_model(
     frame: pd.DataFrame,
     config: TrainingConfig,
 ) -> Any:
-    estimator = build_estimator(config.model_name, config.random_state)
+    estimator = build_estimator(
+        config.model_name,
+        config.random_state,
+        rf_n_estimators=config.rf_n_estimators,
+        rf_min_samples_leaf=config.rf_min_samples_leaf,
+        rf_n_jobs=config.rf_n_jobs,
+    )
     estimator.fit(
         frame[list(config.feature_columns)],
         _transform_target(frame[config.target_column].astype(float), config.use_log_target),

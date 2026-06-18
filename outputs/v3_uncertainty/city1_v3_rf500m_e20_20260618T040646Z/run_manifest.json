@@ -1,0 +1,54 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "model_version": "city1_v3_rf500m_uncertainty",
+  "created_at_utc": "2026-06-18T04:18:07.107636+00:00",
+  "model_artifact_path": "models\\v3_uncertainty\\city1_v3_rf500m_e20_20260618T040646Z\\ensemble_model.joblib",
+  "totals_csv": "data/external/city_population_reference_v2.csv",
+  "cities_completed": [
+    "Almaty",
+    "Astana",
+    "Semey",
+    "Shymkent"
+  ],
+  "generated_files": [
+    "almaty_uncertainty_cells.csv",
+    "almaty_uncertainty_cells.geojson",
+    "astana_uncertainty_cells.csv",
+    "astana_uncertainty_cells.geojson",
+    "city_uncertainty_summary.csv",
+    "semey_uncertainty_cells.csv",
+    "semey_uncertainty_cells.geojson",
+    "shymkent_uncertainty_cells.csv",
+    "shymkent_uncertainty_cells.geojson"
+  ],
+  "fallbacks_used": {
+    "external_agreement_score": "0.50 neutral fallback because city-specific v3 alignment is not part of Phase 4.",
+    "district_interval_coverage": "Not yet available in Phase 4 output summary."
+  },
+  "official_city_total": 1298279,
+  "sum_p50": 1298279.0,
+  "calibrated_member_count": 20,
+  "summary_csv": "city_uncertainty_summary.csv",
+  "city_outputs": {
+    "Almaty": {
+      "official_city_total": 2351424,
+      "sum_p50": 2351424.0,
+      "calibrated_member_count": 20
+    },
+    "Astana": {
+      "official_city_total": 1649242,
+      "sum_p50": 1649242.0,
+      "calibrated_member_count": 20
+    },
+    "Semey": {
+      "official_city_total": 315382,
+      "sum_p50": 315382.0,
+      "calibrated_member_count": 20
+    },
+    "Shymkent": {
+      "official_city_total": 1298279,
+      "sum_p50": 1298279.0,
+      "calibrated_member_count": 20
+    }
+  }
+}
