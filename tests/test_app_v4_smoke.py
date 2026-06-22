@@ -34,6 +34,8 @@ class AppV4SmokeTests(unittest.TestCase):
         self.assertIn("selected_mode", fake.session_state)
         self.assertIn("selected_language", fake.session_state)
         self.assertIn("generated_report_md", fake.session_state)
+        self.assertIn("last_guardrail", fake.session_state)
+        self.assertEqual(fake.session_state["selected_provider"], "Local fallback only")
 
     def test_almaty_overview_uses_frozen_evidence(self) -> None:
         overview = app_v4.get_city_overview("Almaty")
@@ -61,6 +63,17 @@ class AppV4SmokeTests(unittest.TestCase):
         self.assertTrue(response["fallback_used"])
         self.assertTrue(response["has_risk"])
 
+    def test_gemini_provider_label_falls_back_without_key(self) -> None:
+        response = app_v4.run_local_assistant(
+            city="Almaty",
+            mode="Generate City Brief",
+            language="English",
+            provider="Gemini API with fallback",
+        )
+        self.assertEqual(response["provider_requested"], "gemini")
+        self.assertIn(response["provider_used"], {"gemini", "fallback"})
+        self.assertIn("guardrail", response)
+
     def test_markdown_report_contains_required_sections(self) -> None:
         response = app_v4.run_local_assistant(
             city="Almaty",
@@ -78,7 +91,26 @@ class AppV4SmokeTests(unittest.TestCase):
         self.assertIn("## Evidence used", report)
         self.assertIn("## Claim-boundary notes", report)
         self.assertIn("Scientific disclaimer", report)
-        self.assertIn("local fallback engine", report)
+        self.assertIn("guarded language layer with deterministic fallback", report)
+        self.assertIn("fallback provider path", report)
+
+    def test_markdown_report_can_include_guardrail_audit(self) -> None:
+        from city1.llm_guardrails import guard_response
+
+        response = app_v4.run_local_assistant(
+            city="Almaty", mode="city_brief", language="en"
+        )
+        guarded = guard_response(response)
+        report = app_v4.build_markdown_report(
+            guarded["final_response"],
+            city="Almaty",
+            mode="Generate City Brief",
+            question="",
+            guardrail_result=guarded,
+        )
+        self.assertIn("## Guardrail check", report)
+        self.assertIn("**Grounding score:** 100", report)
+        self.assertIn("**Safe rewrite used:** False", report)
 
     def test_helper_outputs_are_json_serializable(self) -> None:
         payloads = [
