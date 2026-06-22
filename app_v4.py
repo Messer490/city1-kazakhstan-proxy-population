@@ -9,6 +9,7 @@ imported only inside ``main`` and no frozen evidence artifact is modified.
 
 from __future__ import annotations
 
+import html
 import json
 import sys
 from pathlib import Path
@@ -55,6 +56,18 @@ STATE_DEFAULTS = {
     "last_guardrail": None,
     "selected_provider": "Local fallback only",
     "show_cache_status": False,
+}
+
+MODE_HELP_TEXT = {
+    "ask": "Ask a bounded question about a city, method, uncertainty, hotspots, or scientific claim boundaries.",
+    "city_brief": "Generate a compact city brief from frozen coverage, confidence, uncertainty, and hotspot evidence.",
+    "hotspot_review": "Review stable and caution-heavy screening classes. Hotspots are not verified population truth.",
+    "uncertainty_summary": "Explain P10/P50/P90 and relative uncertainty as proxy ensemble spread, not census uncertainty.",
+    "confidence_summary": "Explain interpretation-confidence scores and bands. They are not probabilities of correctness.",
+    "compare_cities": "Compare support and reliability indicators without ranking true population accuracy.",
+    "explain_cell": "Explain one frozen grid cell using available proxy, interval, confidence, and evidence fields.",
+    "claim_checker": "Check a draft claim for overstatement and receive conservative replacement wording.",
+    "reviewer_safe": "Generate a compact answer with claim boundaries emphasized for manuscript or reviewer use.",
 }
 
 
@@ -272,44 +285,214 @@ def _initialize_session_state(st: Any) -> None:
         st.session_state.setdefault(key, value)
 
 
+def _mode_help_text(mode: str) -> str:
+    """Return stable UI guidance without changing mode behavior."""
+    return MODE_HELP_TEXT.get(mode, MODE_HELP_TEXT["ask"])
+
+
+def _confidence_band_chart_html(shares: dict[str, Any]) -> str:
+    """Render a dependency-free, light-background confidence distribution."""
+    colors = {"High": "#0b7a75", "Medium": "#d38b2c", "Low": "#b85c4b"}
+    rows = []
+    for label in ("High", "Medium", "Low"):
+        try:
+            value = max(0.0, min(float(shares.get(label) or 0.0), 1.0))
+        except (TypeError, ValueError):
+            value = 0.0
+        percent = value * 100
+        rows.append(
+            "<div class='city1-band-row'>"
+            f"<div class='city1-band-label'>{label}</div>"
+            "<div class='city1-band-track'>"
+            f"<div class='city1-band-fill' style='width:{percent:.1f}%;background:{colors[label]}'></div>"
+            "</div>"
+            f"<div class='city1-band-value'>{percent:.1f}%</div>"
+            "</div>"
+        )
+    return "<div class='city1-band-chart'>" + "".join(rows) + "</div>"
+
+
+def _status_grid_html(
+    *,
+    city: str,
+    support_level: str,
+    provider: str,
+    cache_enabled: bool,
+) -> str:
+    """Build responsive status cards for screenshot and laptop layouts."""
+    support = str(support_level or "unknown").replace("_", " ").title()
+    support_class = " city1-status-value--badge" if support_level == "full_v3" else ""
+    cards = [
+        ("Selected city", city, ""),
+        ("Support level", support, support_class),
+        ("Provider", provider, ""),
+        ("Frozen run", RUN_ID, " city1-status-value--code"),
+        ("Fallback / cache", "Offline ready / " + ("enabled" if cache_enabled else "disabled"), ""),
+    ]
+    rendered = []
+    for label, value, class_name in cards:
+        rendered.append(
+            "<div class='city1-status-card'>"
+            f"<div class='city1-status-label'>{html.escape(str(label))}</div>"
+            f"<div class='city1-status-value{class_name}'>{html.escape(str(value))}</div>"
+            "</div>"
+        )
+    return "<div class='city1-status-grid'>" + "".join(rendered) + "</div>"
+
+
+def _answer_html(answer: Any) -> str:
+    """Escape provider text and preserve readable line breaks inside the answer card."""
+    safe = html.escape(str(answer or "No answer generated.")).replace("\n", "<br>")
+    return f"<div class='city1-answer'>{safe}</div>"
+
+
 def _render_style(st: Any) -> None:
     st.markdown(
         """
         <style>
         :root {
-            --city1-ink: #18323a;
-            --city1-teal: #16756f;
-            --city1-sand: #f3ead7;
-            --city1-amber: #cf7b28;
-            --city1-paper: #fbfaf6;
+            --city1-ink: #0f2f3a;
+            --city1-muted: #4f6670;
+            --city1-teal: #0b7a75;
+            --city1-teal-dark: #075c58;
+            --city1-soft: #e8f5f3;
+            --city1-paper: #f7f8f4;
+            --city1-card: #ffffff;
+            --city1-border: #d7e1df;
+            --city1-sidebar: #14343c;
+            --city1-warning: #fff7db;
+            --city1-warning-text: #3a2a00;
+            --city1-danger: #b42318;
         }
         .stApp {
             background:
-                radial-gradient(circle at 88% 6%, rgba(207,123,40,.12), transparent 27rem),
-                linear-gradient(180deg, var(--city1-paper), #f4f7f4 65%);
+                radial-gradient(circle at 92% 2%, rgba(11,122,117,.08), transparent 28rem),
+                linear-gradient(180deg, #fbfcf9 0%, var(--city1-paper) 72%);
             color: var(--city1-ink);
-            font-family: Georgia, 'Times New Roman', serif;
+            font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
         }
-        h1, h2, h3 { color: var(--city1-ink); letter-spacing: -0.02em; }
+        .main .block-container { max-width: 1500px; padding-top: 2.2rem; padding-bottom: 3rem; }
+        h1, h2, h3, h4 { color: var(--city1-ink) !important; letter-spacing: -0.025em; }
+        p, li, label { color: var(--city1-ink); }
+        [data-testid="stCaptionContainer"] p { color: var(--city1-muted) !important; opacity: 1; }
         [data-testid="stMetric"] {
-            background: rgba(255,255,255,.78);
-            border: 1px solid rgba(24,50,58,.13);
+            background: var(--city1-card);
+            border: 1px solid var(--city1-border);
             border-top: 3px solid var(--city1-teal);
-            border-radius: 10px;
-            padding: .75rem 1rem;
-            box-shadow: 0 8px 28px rgba(24,50,58,.06);
+            border-radius: 14px;
+            padding: .85rem 1rem;
+            box-shadow: 0 8px 24px rgba(15,47,58,.07);
+            min-height: 108px;
         }
-        [data-testid="stSidebar"] { background: #18323a; }
-        [data-testid="stSidebar"] * { color: #f8f2e7; }
+        [data-testid="stMetricLabel"] p { color: var(--city1-muted) !important; font-weight: 700; }
+        [data-testid="stMetricValue"] { color: var(--city1-ink) !important; font-size: 1.55rem; }
+        [data-testid="stSidebar"] { background: var(--city1-sidebar); border-right: 1px solid #28515a; }
+        [data-testid="stSidebar"] h1,
+        [data-testid="stSidebar"] h2,
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+            color: #f5fbfa !important;
+            opacity: 1 !important;
+        }
         [data-testid="stSidebar"] input,
-        [data-testid="stSidebar"] [data-baseweb="select"] * { color: #18323a; }
+        [data-testid="stSidebar"] textarea,
+        [data-testid="stSidebar"] [data-baseweb="select"] input {
+            color: var(--city1-ink) !important;
+            -webkit-text-fill-color: var(--city1-ink) !important;
+        }
+        [data-testid="stSidebar"] [data-baseweb="select"] > div,
+        [data-testid="stSidebar"] [data-baseweb="input"] > div,
+        [data-testid="stSidebar"] [data-baseweb="base-input"] {
+            background: #ffffff !important;
+            color: var(--city1-ink) !important;
+            border-color: #a9c0c0 !important;
+        }
+        [data-testid="stSidebar"] [data-baseweb="select"] span,
+        [data-testid="stSidebar"] [data-baseweb="select"] div {
+            color: var(--city1-ink) !important;
+        }
+        [data-testid="stSidebar"] [data-baseweb="select"]:focus-within > div,
+        [data-testid="stSidebar"] [data-baseweb="input"]:focus-within > div {
+            border-color: #4dc0b8 !important;
+            box-shadow: 0 0 0 2px rgba(77,192,184,.28) !important;
+            outline: none !important;
+        }
+        [data-baseweb="popover"] [role="listbox"] { background: #ffffff !important; }
+        [data-baseweb="popover"] [role="option"] { color: var(--city1-ink) !important; background: #ffffff; }
+        [data-baseweb="popover"] [role="option"]:hover,
+        [data-baseweb="popover"] [aria-selected="true"] { background: var(--city1-soft) !important; }
+        [data-testid="stSidebar"] hr { border-color: rgba(255,255,255,.22); }
+        [data-testid="stSidebar"] [data-testid="stAlert"] {
+            background: #eef9f7 !important; border-color: #75bdb7 !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stAlert"] p { color: var(--city1-ink) !important; }
         .city1-kicker {
             color: var(--city1-teal); font-weight: 700; letter-spacing: .12em;
             text-transform: uppercase; font-size: .75rem;
         }
+        .city1-notice {
+            background: #eef8f6; border: 1px solid #c7e4df; border-left: 5px solid var(--city1-teal);
+            color: var(--city1-ink); border-radius: 12px; padding: 1rem 1.15rem;
+            margin: .8rem 0 1.25rem; line-height: 1.55; box-shadow: 0 5px 18px rgba(15,47,58,.05);
+        }
+        .city1-status-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: .8rem; margin: .25rem 0 1.6rem;
+        }
+        .city1-status-card {
+            background: var(--city1-card); border: 1px solid var(--city1-border);
+            border-radius: 14px; padding: .85rem 1rem; min-height: 94px;
+            box-shadow: 0 8px 24px rgba(15,47,58,.07);
+        }
+        .city1-status-label { color: var(--city1-muted); font-size: .77rem; font-weight: 750; text-transform: uppercase; letter-spacing: .045em; }
+        .city1-status-value { color: var(--city1-ink); font-size: 1.08rem; font-weight: 750; margin-top: .45rem; overflow-wrap: anywhere; }
+        .city1-status-value--badge { display: inline-block; background: var(--city1-soft); color: var(--city1-teal-dark); padding: .25rem .55rem; border-radius: 999px; }
+        .city1-status-value--code { font-family: 'Consolas', monospace; font-size: .78rem; line-height: 1.35; }
         .city1-answer {
-            background: rgba(255,255,255,.82); border-left: 5px solid var(--city1-amber);
-            border-radius: 8px; padding: 1.25rem 1.4rem; line-height: 1.65;
+            background: var(--city1-card); color: var(--city1-ink); border: 1px solid var(--city1-border);
+            border-left: 5px solid var(--city1-teal); border-radius: 14px;
+            padding: 1.2rem 1.35rem; line-height: 1.68; box-shadow: 0 8px 24px rgba(15,47,58,.07);
+            white-space: normal;
+        }
+        .city1-band-chart { background: #fff; border: 1px solid var(--city1-border); border-radius: 14px; padding: 1rem 1.1rem; }
+        .city1-band-row { display: grid; grid-template-columns: 70px minmax(120px, 1fr) 62px; gap: .8rem; align-items: center; margin: .75rem 0; }
+        .city1-band-label, .city1-band-value { color: var(--city1-ink); font-weight: 700; }
+        .city1-band-value { text-align: right; font-variant-numeric: tabular-nums; }
+        .city1-band-track { height: 12px; background: #e9efed; border-radius: 999px; overflow: hidden; }
+        .city1-band-fill { height: 100%; min-width: 2px; border-radius: 999px; }
+        .city1-mode-help { color: var(--city1-muted); margin: -.3rem 0 .85rem; line-height: 1.5; }
+        .city1-footer {
+            background: #eaf2f0; color: #284953; border: 1px solid #cededb;
+            border-radius: 12px; padding: .9rem 1.05rem; margin-top: 1.25rem;
+            font-size: .88rem; line-height: 1.55;
+        }
+        [data-testid="stAlert"] { border-radius: 10px; }
+        [data-testid="stAlert"] p { color: var(--city1-ink) !important; opacity: 1; }
+        [data-testid="stExpander"] { background: rgba(255,255,255,.76); border-color: var(--city1-border); border-radius: 12px; }
+        [data-testid="stExpander"] summary p { color: var(--city1-ink) !important; font-weight: 700; }
+        .stButton > button, .stDownloadButton > button {
+            border-radius: 10px; min-height: 2.75rem; font-weight: 750;
+            border-color: #9db9b7; color: var(--city1-ink); background: #ffffff;
+        }
+        .stButton > button:hover, .stDownloadButton > button:hover { border-color: var(--city1-teal); color: var(--city1-teal-dark); }
+        .stButton > button[kind="primary"] {
+            background: var(--city1-teal) !important; color: #ffffff !important; border-color: var(--city1-teal) !important;
+        }
+        .stButton > button:focus, .stDownloadButton > button:focus {
+            border-color: var(--city1-teal) !important; box-shadow: 0 0 0 2px rgba(11,122,117,.22) !important;
+        }
+        .stButton > button:disabled { opacity: .58; color: #526a72 !important; background: #e8eeec !important; }
+        textarea, [data-baseweb="input"] > div { background: #ffffff !important; color: var(--city1-ink) !important; }
+        textarea:focus, input:focus { border-color: var(--city1-teal) !important; box-shadow: none !important; }
+        @media (max-width: 900px) {
+            .main .block-container { padding-left: 1rem; padding-right: 1rem; }
+            .city1-status-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+            [data-testid="stMetric"] { min-height: 96px; }
+        }
+        @media (max-width: 560px) {
+            .city1-band-row { grid-template-columns: 62px 1fr 52px; gap: .55rem; }
         }
         </style>
         """,
@@ -323,8 +506,8 @@ def _render_response(st: Any, response: dict[str, Any]) -> None:
     status_columns[1].metric("Fallback used", "Yes" if response.get("fallback_used") else "No")
     status_columns[2].metric("Evidence sources", len(response.get("evidence_used", [])))
 
-    st.markdown("### Assistant response")
-    st.markdown(response.get("answer", "No answer generated."))
+    st.markdown("### Generated interpretation")
+    st.markdown(_answer_html(response.get("answer")), unsafe_allow_html=True)
 
     missing = response.get("missing_artifacts", [])
     if missing:
@@ -470,9 +653,12 @@ def main() -> None:
                 st.success(f"Gemini ready: {gemini_status['model']}")
             else:
                 st.warning(f"Gemini unavailable: {gemini_status['reason']}")
-        st.caption(
-            f"SDK: {'available' if gemini_status['sdk_available'] else 'missing'}; "
-            f"API key: {'available' if gemini_status['api_key_available'] else 'missing'}."
+        st.markdown(
+            "<div style='color:#d9ece9;font-size:.82rem;line-height:1.45;margin:.15rem 0 .75rem'>"
+            f"SDK: <strong>{'available' if gemini_status['sdk_available'] else 'missing'}</strong> &nbsp;|&nbsp; "
+            f"API key: <strong>{'available' if gemini_status['api_key_available'] else 'missing'}</strong>"
+            "</div>",
+            unsafe_allow_html=True,
         )
         use_cache = st.checkbox("Use local cache", value=True)
         use_retrieval = st.checkbox("Use City1 mini-RAG snippets", value=True)
@@ -504,32 +690,43 @@ def main() -> None:
     language_code = LANGUAGE_LABEL_TO_CODE[st.session_state["selected_language"]]
 
     st.markdown("<div class='city1-kicker'>City1 / cCity research interface</div>", unsafe_allow_html=True)
-    st.title("City1 v4 — Tool-Grounded LLM Interpretation Assistant")
+    st.title("City1 v4 - Tool-Grounded LLM Interpretation Assistant")
     st.caption("Evidence-first fallback interface for calibrated and uncertainty-aware proxy population surfaces.")
     if language_code == "ru":
-        st.warning("City1 v4 объясняет frozen V2/V3 evidence. Он не создаёт новые оценки населения и не восстанавливает true cell-level census counts.")
+        notice = (
+            "City1 v4 объясняет зафиксированные данные V2/V3. Он не создаёт новые оценки населения "
+            "и не восстанавливает истинные данные переписи на уровне ячеек."
+        )
     else:
-        st.warning("City1 v4 explains frozen V2/V3 evidence. It does not create new population estimates and does not reconstruct true cell-level census counts.")
+        notice = (
+            "City1 v4 explains frozen V2/V3 evidence. It does not create new population estimates "
+            "or reconstruct true cell-level census counts."
+        )
+    st.markdown(f"<div class='city1-notice'>{html.escape(notice)}</div>", unsafe_allow_html=True)
 
-    top_cards = st.columns(5)
-    top_cards[0].metric("Selected city", overview["city"] or selected_city)
-    top_cards[1].metric("Support level", str(overview["support_level"]).replace("_", " ").title())
     cached_response = st.session_state.get("last_response") or {}
     provider_display = cached_response.get("provider_used") or (
         "gemini + fallback" if st.session_state["selected_provider"] == "Gemini API with fallback" else "local fallback"
     )
-    top_cards[2].metric("Provider", str(provider_display).title())
-    top_cards[3].metric("Run ID", RUN_ID)
-    top_cards[4].metric("Fallback status", "Ready offline")
+    st.markdown(
+        _status_grid_html(
+            city=overview["city"] or selected_city,
+            support_level=str(overview["support_level"]),
+            provider=str(provider_display).title(),
+            cache_enabled=use_cache,
+        ),
+        unsafe_allow_html=True,
+    )
 
-    st.markdown("### City evidence overview")
-    evidence_cards = st.columns(6)
-    evidence_cards[0].metric("Official total", _fmt_integer(overview["official_total"]))
-    evidence_cards[1].metric("Grid cells", _fmt_integer(overview["cell_count"]))
-    evidence_cards[2].metric("Median rel. uncertainty", _fmt_float(overview["median_relative_uncertainty"]))
-    evidence_cards[3].metric("Mean confidence", _fmt_float(overview["mean_confidence_score"]))
-    evidence_cards[4].metric("Priority cells", _fmt_integer(overview["priority_cells"]))
-    evidence_cards[5].metric("OSM context", str(overview["osm_label"] or "Not available").title())
+    st.markdown("## City evidence overview")
+    evidence_row_one = st.columns(3)
+    evidence_row_one[0].metric("Official total", _fmt_integer(overview["official_total"]))
+    evidence_row_one[1].metric("Grid cells", _fmt_integer(overview["cell_count"]))
+    evidence_row_one[2].metric("Median relative uncertainty", _fmt_float(overview["median_relative_uncertainty"]))
+    evidence_row_two = st.columns(3)
+    evidence_row_two[0].metric("Mean confidence", _fmt_float(overview["mean_confidence_score"]))
+    evidence_row_two[1].metric("Priority cells", _fmt_integer(overview["priority_cells"]))
+    evidence_row_two[2].metric("OSM context", str(overview["osm_label"] or "Not available").title())
 
     shares = {
         "High": overview["high_confidence_share"],
@@ -537,16 +734,18 @@ def main() -> None:
         "Low": overview["low_confidence_share"],
     }
     if any(value is not None for value in shares.values()):
-        with st.expander("Confidence-band distribution", expanded=False):
-            chart = pd.DataFrame(
-                {"Confidence band": list(shares), "Share": [shares[key] or 0.0 for key in shares]}
-            ).set_index("Confidence band")
-            st.bar_chart(chart)
+        with st.expander("Confidence-band distribution", expanded=True):
+            st.markdown(_confidence_band_chart_html(shares), unsafe_allow_html=True)
             st.caption("confidence_score is interpretation support, not a probability of correctness.")
     elif overview["support_level"] != "full_v3":
         st.info("Full V3 confidence-band evidence is unavailable for this city.")
 
-    st.markdown("### Assistant panel")
+    st.markdown("## Ask or generate an interpretation")
+    st.markdown(
+        f"<div class='city1-mode-help'><strong>Current mode:</strong> "
+        f"{html.escape(st.session_state['selected_mode'])}. {html.escape(_mode_help_text(mode_key))}</div>",
+        unsafe_allow_html=True,
+    )
     question_placeholder = {
         "claim_checker": "Paste a scientific claim to check...",
         "explain_cell": "Optional context for the selected cell...",
@@ -639,9 +838,11 @@ def main() -> None:
             st.markdown(f"- {item}")
 
     st.divider()
-    st.caption(
-        "City1 v4 guarded interpretation interface. Hotspot classes are screening/triage outputs; "
-        "proxy intervals are not true census uncertainty; external products are structural comparators only."
+    st.markdown(
+        "<div class='city1-footer'><strong>Scientific boundary.</strong> City1 v4 is a guarded interpretation "
+        "interface. Hotspot classes are screening/triage outputs; proxy intervals are not true census "
+        "uncertainty; external products are structural comparators only.</div>",
+        unsafe_allow_html=True,
     )
 
 

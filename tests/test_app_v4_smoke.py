@@ -11,6 +11,14 @@ class _FakeStreamlit:
         self.session_state: dict = {}
 
 
+class _StyleCapture:
+    def __init__(self) -> None:
+        self.content = ""
+
+    def markdown(self, content: str, **_: object) -> None:
+        self.content = content
+
+
 class AppV4SmokeTests(unittest.TestCase):
     def test_module_import_is_streamlit_safe(self) -> None:
         self.assertNotIn("streamlit", app_v4.__dict__)
@@ -36,6 +44,42 @@ class AppV4SmokeTests(unittest.TestCase):
         self.assertIn("generated_report_md", fake.session_state)
         self.assertIn("last_guardrail", fake.session_state)
         self.assertEqual(fake.session_state["selected_provider"], "Local fallback only")
+
+    def test_all_nine_modes_have_readable_help_text(self) -> None:
+        self.assertEqual(len(app_v4.MODE_LABEL_TO_KEY), 9)
+        for mode in app_v4.MODE_LABEL_TO_KEY.values():
+            with self.subTest(mode=mode):
+                self.assertGreater(len(app_v4._mode_help_text(mode)), 40)
+
+    def test_confidence_chart_is_lightweight_and_readable(self) -> None:
+        chart = app_v4._confidence_band_chart_html({"High": 0.5, "Medium": 0.3, "Low": 0.2})
+        self.assertIn("city1-band-chart", chart)
+        self.assertIn("High", chart)
+        self.assertIn("50.0%", chart)
+        self.assertNotIn("<canvas", chart)
+
+    def test_answer_card_escapes_provider_html(self) -> None:
+        rendered = app_v4._answer_html("Safe <script>alert(1)</script>\nSecond line")
+        self.assertIn("city1-answer", rendered)
+        self.assertNotIn("<script>", rendered)
+        self.assertIn("&lt;script&gt;", rendered)
+        self.assertIn("<br>", rendered)
+
+    def test_status_grid_contains_required_screenshot_fields(self) -> None:
+        rendered = app_v4._status_grid_html(
+            city="Almaty", support_level="full_v3", provider="Local fallback", cache_enabled=True
+        )
+        for label in ("Selected city", "Support level", "Provider", "Frozen run", "Fallback / cache"):
+            self.assertIn(label, rendered)
+        self.assertIn("city1-status-value--badge", rendered)
+
+    def test_theme_uses_high_contrast_sidebar_and_teal_focus(self) -> None:
+        capture = _StyleCapture()
+        app_v4._render_style(capture)
+        self.assertIn("--city1-sidebar: #14343c", capture.content)
+        self.assertIn("background: #ffffff !important", capture.content)
+        self.assertIn("border-color: var(--city1-teal) !important", capture.content)
+        self.assertIn(".city1-footer", capture.content)
 
     def test_almaty_overview_uses_frozen_evidence(self) -> None:
         overview = app_v4.get_city_overview("Almaty")
