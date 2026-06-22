@@ -51,7 +51,7 @@ class LlmClientTests(unittest.TestCase):
         self.assertTrue(result["error"])
 
     def test_fallback_provider_works_without_gemini(self) -> None:
-        result = generate_llm_response(city="Almaty", mode="city_brief", provider="fallback")
+        result = generate_llm_response(city="Almaty", mode="city_brief", provider="fallback", use_cache=False, use_retrieval=False)
         self.assertEqual(result["provider_requested"], "fallback")
         self.assertEqual(result["provider_used"], "fallback")
         self.assertTrue(result["fallback_used"])
@@ -59,7 +59,7 @@ class LlmClientTests(unittest.TestCase):
 
     def test_gemini_provider_falls_back_without_key(self) -> None:
         with patch.dict(os.environ, {}, clear=True):
-            result = generate_llm_response(city="Almaty", mode="city_brief", provider="gemini")
+            result = generate_llm_response(city="Almaty", mode="city_brief", provider="gemini", use_cache=False, use_retrieval=False)
         self.assertEqual(result["provider_requested"], "gemini")
         self.assertEqual(result["provider_used"], "fallback")
         self.assertTrue(result["fallback_used"])
@@ -67,7 +67,7 @@ class LlmClientTests(unittest.TestCase):
         self.assertTrue(result["gemini"]["error"])
 
     def test_output_includes_guardrail_metadata(self) -> None:
-        result = generate_llm_response(city="Almaty", mode="city_brief", provider="fallback")
+        result = generate_llm_response(city="Almaty", mode="city_brief", provider="fallback", use_cache=False, use_retrieval=False)
         self.assertIn("guardrail", result)
         self.assertIn("grounding_score", result["guardrail"])
         self.assertIn("used_safe_rewrite", result)
@@ -96,7 +96,7 @@ class LlmClientTests(unittest.TestCase):
             "used_fallback": False,
         }
         with patch("city1.llm_client.call_gemini_structured", return_value=mocked):
-            result = generate_llm_response(city="Almaty", mode="city_brief", provider="gemini")
+            result = generate_llm_response(city="Almaty", mode="city_brief", provider="gemini", use_cache=False, use_retrieval=False)
         self.assertEqual(result["provider_used"], "gemini")
         self.assertFalse(result["fallback_used"])
         self.assertTrue(result["guardrail"]["passed"])
@@ -125,7 +125,7 @@ class LlmClientTests(unittest.TestCase):
             "used_fallback": False,
         }
         with patch("city1.llm_client.call_gemini_structured", return_value=mocked):
-            result = generate_llm_response(city="Almaty", mode="city_brief", provider="gemini")
+            result = generate_llm_response(city="Almaty", mode="city_brief", provider="gemini", use_cache=False, use_retrieval=False)
         self.assertEqual(result["provider_used"], "fallback")
         self.assertTrue(result["fallback_used"])
         self.assertTrue(result["gemini"]["guardrail_rejected"])
@@ -148,7 +148,7 @@ class LlmClientTests(unittest.TestCase):
             build_gemini_prompt(pack, "Question", "ask"),
             estimate_evidence_packet_size(pack),
             parse_gemini_json_response('{"answer":"safe"}'),
-            generate_llm_response(city="Almaty", mode="city_brief", provider="fallback"),
+            generate_llm_response(city="Almaty", mode="city_brief", provider="fallback", use_cache=False, use_retrieval=False),
         ]
         for payload in payloads:
             json.dumps(payload, ensure_ascii=False)

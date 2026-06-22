@@ -16,6 +16,8 @@ catboost_info/
 data/raw/
 data/interim/
 data/processed/
+data/v4_qa_cache/
+*.cache.json
 data/external/*.xlsx
 data/external/region_population_tables/
 data/external/external_benchmarks/

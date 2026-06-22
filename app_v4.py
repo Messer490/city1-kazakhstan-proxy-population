@@ -21,6 +21,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from city1.llm_client import generate_llm_response, get_gemini_status  # noqa: E402
+from city1.llm_cache import get_cache_status  # noqa: E402
 from city1.llm_tools import (  # noqa: E402
     RUN_ID,
     compare_cities,
@@ -53,6 +54,7 @@ STATE_DEFAULTS = {
     "generated_report_md": "",
     "last_guardrail": None,
     "selected_provider": "Local fallback only",
+    "show_cache_status": False,
 }
 
 
@@ -106,6 +108,9 @@ def run_local_assistant(
     cell_id: str | int | None = None,
     cities: list[str] | None = None,
     provider: str = "fallback",
+    use_cache: bool = False,
+    use_retrieval: bool = False,
+    cache_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     """Call the guarded provider backend used by the Streamlit Generate button."""
     mode_key = MODE_LABEL_TO_KEY.get(mode, mode if mode in MODE_LABEL_TO_KEY.values() else "ask")
@@ -119,6 +124,9 @@ def run_local_assistant(
         cell_id=cell_id,
         cities=cities,
         provider=provider_key,
+        use_cache=use_cache,
+        use_retrieval=use_retrieval,
+        cache_dir=cache_dir,
     )
 
 
@@ -198,6 +206,27 @@ def build_markdown_report(
             f"- **Latency seconds:** {gemini.get('latency_seconds', 0.0)}",
             f"- **Error/fallback reason:** {gemini.get('error') or 'None'}",
         ])
+    cache = response.get("cache_metadata")
+    if isinstance(cache, dict):
+        lines.extend([
+            "",
+            "## Cache metadata",
+            "",
+            f"- **Cache hit:** {response.get('cache_hit', False)}",
+            f"- **Match type:** {cache.get('match_type', 'none')}",
+            f"- **Similarity:** {cache.get('similarity', 0.0)}",
+            f"- **Cache ID:** {cache.get('cache_id') or 'None'}",
+            f"- **Evidence hash:** {cache.get('evidence_hash') or 'None'}",
+            f"- **Reason:** {cache.get('reason') or 'None'}",
+        ])
+    snippets = response.get("retrieved_snippets")
+    if isinstance(snippets, list) and snippets:
+        lines.extend(["", "## Retrieved City1 evidence snippets", ""])
+        for item in snippets:
+            lines.append(
+                f"- **{item.get('title', 'Evidence')}** (`{item.get('source', 'local')}`, "
+                f"score={item.get('score', 0.0)}): {item.get('snippet', '')}"
+            )
     lines.extend([
         "",
         "## Scientific disclaimer",
@@ -379,6 +408,29 @@ def _render_provider_metadata(st: Any, response: dict[str, Any]) -> None:
             st.success("Gemini generated the language response; deterministic guardrails approved it.")
 
 
+def _render_cache_and_retrieval(st: Any, response: dict[str, Any]) -> None:
+    cache = response.get("cache_metadata", {})
+    st.markdown("### Cache and local retrieval")
+    columns = st.columns(4)
+    columns[0].metric("Cache", "Hit" if response.get("cache_hit") else "Miss / disabled")
+    columns[1].metric("Match type", str(cache.get("match_type", "none")).title())
+    columns[2].metric("Similarity", f"{float(cache.get('similarity') or 0.0):.3f}")
+    evidence_hash = str(cache.get("evidence_hash") or "")
+    columns[3].metric("Evidence hash", evidence_hash[:12] if evidence_hash else "Not available")
+    if response.get("cache_hit"):
+        st.success("A previously guardrail-approved answer was reused; no Gemini call was needed.")
+
+    snippets = response.get("retrieved_snippets", [])
+    with st.expander("Retrieved City1 evidence snippets", expanded=False):
+        if snippets:
+            for item in snippets:
+                st.markdown(f"**{item.get('title', 'Evidence')}** — score `{item.get('score', 0.0)}`")
+                st.caption(f"Source: {item.get('source', 'local City1 artifact')}")
+                st.write(item.get("snippet", ""))
+        else:
+            st.info("Mini-RAG retrieval was disabled or returned no local snippets.")
+
+
 def main() -> None:
     try:
         import pandas as pd
@@ -422,6 +474,17 @@ def main() -> None:
             f"SDK: {'available' if gemini_status['sdk_available'] else 'missing'}; "
             f"API key: {'available' if gemini_status['api_key_available'] else 'missing'}."
         )
+        use_cache = st.checkbox("Use local cache", value=True)
+        use_retrieval = st.checkbox("Use City1 mini-RAG snippets", value=True)
+        if st.button("Show cache status", use_container_width=True):
+            st.session_state["show_cache_status"] = not st.session_state.get("show_cache_status", False)
+        if st.session_state.get("show_cache_status"):
+            cache_status = get_cache_status()
+            st.info(
+                f"Entries: {cache_status['entry_count']} | "
+                f"Index: {'present' if cache_status['index_exists'] else 'not created'} | "
+                f"Directory: {cache_status['cache_dir']}"
+            )
 
         mode_key = MODE_LABEL_TO_KEY[st.session_state["selected_mode"]]
         cell_id = None
@@ -523,6 +586,8 @@ def main() -> None:
                         cell_id=cell_id,
                         cities=compare_selection,
                         provider=st.session_state["selected_provider"],
+                        use_cache=use_cache,
+                        use_retrieval=use_retrieval,
                     )
                     guarded = {
                         "guardrail": response.get("guardrail", {}),
@@ -546,6 +611,7 @@ def main() -> None:
     if response:
         _render_response(st, response)
         _render_provider_metadata(st, response)
+        _render_cache_and_retrieval(st, response)
         guarded = st.session_state.get("last_guardrail")
         if guarded:
             _render_guardrail(st, guarded)

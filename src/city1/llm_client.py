@@ -15,6 +15,11 @@ import time
 from pathlib import Path
 from typing import Any, Iterable
 
+from city1.llm_cache import (
+    augment_evidence_pack_with_retrieval,
+    lookup_cached_response,
+    store_cached_response,
+)
 from city1.llm_fallback import SUPPORTED_MODES, generate_fallback_response
 from city1.llm_guardrails import guard_response
 from city1.llm_tools import (
@@ -143,6 +148,9 @@ def _compact_evidence_pack(evidence_pack: dict[str, Any]) -> dict[str, Any]:
         "method_summary",
         "evidence_sources",
         "missing_artifacts",
+        "retrieved_snippets",
+        "retrieval_sources",
+        "retrieval_note",
     )
     selected = {key: evidence_pack[key] for key in allowed_keys if key in evidence_pack}
     return _compact_value(selected)
@@ -427,12 +435,67 @@ def generate_llm_response(
     evidence_pack: dict[str, Any] | None = None,
     cell_id: str | int | None = None,
     cities: list[str] | None = None,
+    use_cache: bool = True,
+    use_retrieval: bool = True,
+    cache_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     """Generate one guarded Gemini or deterministic fallback response."""
     normalized_mode = mode if mode in SUPPORTED_MODES else "ask"
     normalized_language = language if language in {"en", "ru"} else "en"
     provider_requested = "gemini" if str(provider).lower() in {"gemini", "gemini api with fallback"} else "fallback"
     pack = _prepare_evidence_pack(city, question, normalized_mode, evidence_pack, cell_id, cities)
+    if use_retrieval:
+        pack = augment_evidence_pack_with_retrieval(pack, question, city=city or pack.get("city"), top_k=5)
+
+    lookup = {
+        "hit": False,
+        "match_type": "none",
+        "similarity": 0.0,
+        "reason": "Local cache is disabled.",
+    }
+    if use_cache:
+        lookup = lookup_cached_response(
+            city=city or str(pack.get("city") or ""),
+            mode=normalized_mode,
+            language=normalized_language,
+            question=question,
+            evidence_pack=pack,
+            cache_dir=cache_dir,
+            allow_similarity=True,
+        )
+        if lookup["hit"]:
+            cached_response = dict(lookup["cached_response"])
+            cached_guarded = guard_response(cached_response, language=normalized_language, auto_rewrite=False)
+            if cached_guarded["guardrail"]["passed"]:
+                result = dict(cached_guarded["final_response"])
+                cached_source = str(lookup.get("source") or "fallback")
+                result.update({
+                    "provider_requested": provider_requested,
+                    "provider_used": "cache",
+                    "fallback_used": cached_source == "fallback",
+                    "gemini": {
+                        "success": False,
+                        "model": _model_name(),
+                        "error": "Cache hit; Gemini call was not needed." if provider_requested == "gemini" else None,
+                        "latency_seconds": 0.0,
+                    },
+                    "guardrail": cached_guarded["guardrail"],
+                    "used_safe_rewrite": False,
+                    "cache_hit": True,
+                    "cache_metadata": {
+                        "match_type": lookup["match_type"],
+                        "similarity": lookup["similarity"],
+                        "cache_id": lookup.get("cache_id"),
+                        "evidence_hash": lookup.get("evidence_hash"),
+                        "source": cached_source,
+                        "reason": lookup["reason"],
+                    },
+                    "retrieved_snippets": list(pack.get("retrieved_snippets", [])),
+                    "retrieval_sources": list(pack.get("retrieval_sources", [])),
+                    "retrieval_note": pack.get("retrieval_note"),
+                })
+                json.dumps(result, ensure_ascii=False)
+                return result
 
     gemini_meta: dict[str, Any] = {
         "success": False,
@@ -460,9 +523,14 @@ def generate_llm_response(
                 if gemini_guarded["guardrail"]["passed"]:
                     final_response = dict(gemini_guarded["final_response"])
                     final_response.pop("claim_text_under_review", None)
-                    return _finalize_result(
+                    result = _finalize_result(
                         final_response, gemini_guarded,
                         provider_requested="gemini", provider_used="gemini", gemini_meta=gemini_meta,
+                    )
+                    return _attach_cache_and_retrieval(
+                        result, pack, lookup, use_cache=use_cache, cache_dir=cache_dir,
+                        city=city or str(pack.get("city") or ""), mode=normalized_mode,
+                        language=normalized_language, question=question,
                     )
                 gemini_meta["error"] = "Gemini response was rejected by deterministic claim-boundary guardrails."
                 gemini_meta["guardrail_rejected"] = True
@@ -486,10 +554,59 @@ def generate_llm_response(
     final_response.pop("claim_text_under_review", None)
     if provider_requested == "gemini" and not gemini_meta.get("error"):
         gemini_meta["error"] = "Gemini was unavailable; deterministic fallback was used."
-    return _finalize_result(
+    result = _finalize_result(
         final_response, fallback_guarded,
         provider_requested=provider_requested, provider_used="fallback", gemini_meta=gemini_meta,
     )
+    return _attach_cache_and_retrieval(
+        result, pack, lookup, use_cache=use_cache, cache_dir=cache_dir,
+        city=city or str(pack.get("city") or ""), mode=normalized_mode,
+        language=normalized_language, question=question,
+    )
+
+
+def _attach_cache_and_retrieval(
+    result: dict[str, Any],
+    evidence_pack: dict[str, Any],
+    lookup: dict[str, Any],
+    *,
+    use_cache: bool,
+    cache_dir: str | Path | None,
+    city: str,
+    mode: str,
+    language: str,
+    question: str,
+) -> dict[str, Any]:
+    result["cache_hit"] = False
+    result["retrieved_snippets"] = list(evidence_pack.get("retrieved_snippets", []))
+    result["retrieval_sources"] = list(evidence_pack.get("retrieval_sources", []))
+    result["retrieval_note"] = evidence_pack.get("retrieval_note")
+    cache_metadata: dict[str, Any] = {
+        "enabled": use_cache,
+        "match_type": lookup.get("match_type", "none"),
+        "similarity": lookup.get("similarity", 0.0),
+        "cache_id": lookup.get("cache_id"),
+        "evidence_hash": lookup.get("evidence_hash"),
+        "reason": lookup.get("reason", "Local cache is disabled."),
+    }
+    if use_cache:
+        store = store_cached_response(
+            result,
+            evidence_pack,
+            question=question,
+            city=city,
+            mode=mode,
+            language=language,
+            cache_dir=cache_dir,
+        )
+        cache_metadata["store"] = store
+        if store.get("evidence_hash"):
+            cache_metadata["evidence_hash"] = store["evidence_hash"]
+        if store.get("cache_id"):
+            cache_metadata["cache_id"] = store["cache_id"]
+    result["cache_metadata"] = cache_metadata
+    json.dumps(result, ensure_ascii=False)
+    return result
 
 
 def get_llm_client_capabilities() -> dict[str, Any]:
@@ -501,6 +618,8 @@ def get_llm_client_capabilities() -> dict[str, Any]:
         "fallback_behavior": "Any missing key, SDK error, timeout, quota error, invalid JSON, or unsafe Gemini response uses deterministic fallback.",
         "internet_rag": False,
         "changes_model_outputs": False,
+        "local_cache": True,
+        "city1_only_retrieval": True,
     }
 
 
