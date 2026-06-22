@@ -32,6 +32,13 @@ class LlmGuardrailTests(unittest.TestCase):
         self.assertTrue(result["passed"])
         self.assertEqual(result["severity"], "none")
 
+    def test_without_guarantee_is_safe_boundary_wording(self) -> None:
+        result = check_answer_for_forbidden_claims(
+            "Numerical outputs are bounded proxy evidence without a guarantee of cell-level accuracy."
+        )
+        self.assertTrue(result["passed"])
+        self.assertEqual(result["severity"], "none")
+
     def test_true_census_reconstruction_is_detected(self) -> None:
         result = check_answer_for_forbidden_claims("This is true census reconstruction.")
         self.assertFalse(result["passed"])
@@ -52,9 +59,26 @@ class LlmGuardrailTests(unittest.TestCase):
         result = check_answer_for_forbidden_claims("This cell is a verified hotspot.")
         self.assertEqual(result["violations"][0]["category"], "VERIFIED_HOTSPOT_TRUTH")
 
+    def test_russian_hotspot_first_word_order_is_detected(self) -> None:
+        result = check_answer_for_forbidden_claims(
+            "hotspot доказан как реальное место высокой плотности.", language="ru"
+        )
+        self.assertIn(
+            "VERIFIED_HOTSPOT_TRUTH",
+            {item["category"] for item in result["violations"]},
+        )
+
     def test_llm_accuracy_claim_is_detected(self) -> None:
         result = check_answer_for_forbidden_claims("LLM improves population prediction accuracy.")
         self.assertEqual(result["violations"][0]["category"], "LLM_IMPROVES_PREDICTION_ACCURACY")
+        self.assertEqual(result["severity"], "critical")
+
+    def test_russian_past_tense_llm_accuracy_claim_is_detected(self) -> None:
+        result = check_answer_for_forbidden_claims("LLM улучшил точность населения.", language="ru")
+        self.assertIn(
+            "LLM_IMPROVES_PREDICTION_ACCURACY",
+            {item["category"] for item in result["violations"]},
+        )
         self.assertEqual(result["severity"], "critical")
 
     def test_automated_policy_claim_is_detected(self) -> None:

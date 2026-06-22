@@ -125,6 +125,7 @@ _RULES: dict[str, dict[str, Any]] = {
             "ru": [
                 r"\bподтвержд[её]нн\w*\s+hotspot\b",
                 r"\bдоказанн\w*\s+hotspot\b",
+                r"\bhotspot\s+доказан\w*\b",
                 r"\bистинн\w*\s+hotspot\b",
             ],
         },
@@ -146,7 +147,7 @@ _RULES: dict[str, dict[str, Any]] = {
                 r"\bllm\s+predicts?\s+missing\s+population\b",
             ],
             "ru": [
-                r"\bllm\s+улучшает\s+точност\w*\s+населен\w*\b",
+                r"\bllm\s+улучш\w*\s+точност\w*\s+населен\w*\b",
                 r"\bgemini\s+делает\s+поверхност\w*\s+точнее\b",
                 r"\bчатбот\s+исправляет\s+оценк\w*\s+населен\w*\b",
             ],
@@ -247,7 +248,10 @@ def _is_negated(text: str, start: int) -> bool:
     """Treat explicit negation in the current clause as safe boundary wording."""
     lookback = text[max(0, start - 100):start].lower()
     clause = re.split(r"[.;:!?\n]", lookback)[-1]
-    return bool(re.search(r"\b(?:not|never|cannot|can't|isn't|aren't|doesn't|do\s+not|does\s+not|is\s+not|are\s+not|не|нельзя)\b", clause))
+    return bool(re.search(
+        r"\b(?:not|never|without|cannot|can't|isn't|aren't|doesn't|do\s+not|does\s+not|is\s+not|are\s+not|не|нельзя)\b",
+        clause,
+    ))
 
 
 def _severity_max(current: str, candidate: str) -> str:
