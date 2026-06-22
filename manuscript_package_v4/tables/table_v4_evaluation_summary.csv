@@ -1,0 +1,5 @@
+configuration,cases,claim_boundary_intervention_rate,critical_intervention_rate,evidence_usage_rate,grounding_score_mean,fallback_rate,cache_hit_rate,missing_artifact_rate,completeness_mean,limitation_awareness_mean,unsafe_phrases_after
+claim_checker_only,72,0.1528,0.0278,1.0,100.0,1.0,0.0,0.0,0.6347,0.2222,0
+fallback_only,72,0.1389,0.0278,1.0,100.0,1.0,0.0,0.0139,0.9264,0.7083,0
+fallback_with_cache,72,0.1389,0.0278,1.0,100.0,1.0,0.0139,0.0139,0.9264,0.7083,0
+gemini_with_fallback,72,0.1389,0.0278,1.0,100.0,1.0,0.0,0.0139,0.9264,0.7083,0

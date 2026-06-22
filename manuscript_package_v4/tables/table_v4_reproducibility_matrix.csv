@@ -1,0 +1,9 @@
+component,file_path,test_file,command,status
+V4 local tools,src/city1/llm_tools.py,tests/test_llm_tools.py,python -m unittest tests.test_llm_tools -v,implemented
+Fallback,src/city1/llm_fallback.py,tests/test_llm_fallback.py,python -m unittest tests.test_llm_fallback -v,implemented
+Guardrails,src/city1/llm_guardrails.py,tests/test_llm_guardrails.py,python -m unittest tests.test_llm_guardrails -v,implemented
+Gemini/fallback client,src/city1/llm_client.py,tests/test_llm_client.py,python -m unittest tests.test_llm_client -v,optional Gemini
+Cache and mini-RAG,src/city1/llm_cache.py,tests/test_llm_cache.py,python -m unittest tests.test_llm_cache -v,implemented
+Evaluation,src/city1/llm_evaluation.py,tests/test_llm_evaluation.py,python scripts/run_v4_llm_evaluation.py --no-gemini,implemented
+Streamlit UI,app_v4.py,tests/test_app_v4_smoke.py,streamlit run app_v4.py,implemented
+Paper package,scripts/build_v4_paper_package.py,tests/test_v4_paper_package.py,python scripts/build_v4_paper_package.py,implemented

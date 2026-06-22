@@ -1,0 +1,9 @@
+category,risky_claim_example,safe_alternative,severity_logic,implemented_in
+TRUE_CENSUS_RECONSTRUCTION,true cell-level census reconstruction,calibrated proxy population surface,critical,src/city1/llm_guardrails.py
+TRUE_UNCERTAINTY,true census uncertainty,proxy ensemble spread,critical,src/city1/llm_guardrails.py
+CONFIDENCE_AS_PROBABILITY,confidence_score is probability,interpretation-confidence score,high,src/city1/llm_guardrails.py
+EXTERNAL_PRODUCTS_AS_GROUND_TRUTH,WorldPop is ground truth,structural comparator,high,src/city1/llm_guardrails.py
+VERIFIED_HOTSPOT_TRUTH,verified population hotspot,screening candidate,high,src/city1/llm_guardrails.py
+LLM_IMPROVES_PREDICTION_ACCURACY,LLM improves population accuracy,evidence-linked explanation,critical,src/city1/llm_guardrails.py
+AUTOMATED_POLICY_DECISION,no manual review needed,manual review recommended,high,src/city1/llm_guardrails.py
+FAKE_PRECISION_OR_OVERCONFIDENCE,guaranteed exact cell value,bounded proxy interpretation,medium,src/city1/llm_guardrails.py

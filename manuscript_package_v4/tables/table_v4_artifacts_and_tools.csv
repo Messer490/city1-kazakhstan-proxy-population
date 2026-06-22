@@ -1,0 +1,9 @@
+artifact_group,source_path,tool_function,used_by,claim_boundary
+V2/V3 registry,data/external/city_status_registry_v2.csv,get_available_cities; get_city_summary,city selection and support status,registry support is not cell truth
+V3 city outputs,outputs/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/,get_cell_evidence,selected-cell explanations,proxy values and ensemble spread
+Hotspot reports,reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/,get_hotspot_summary,hotspot review,screening classes only
+Uncertainty reports,reports/uncertainty_validation_v3/city1_v3_rf500m_e20_20260618T040646Z/,get_uncertainty_summary,uncertainty interpretation,not true census uncertainty
+Claim files,reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/limitations/,get_claim_boundaries,all response modes,explicit allowed/forbidden wording
+Evidence packet,src/city1/llm_tools.py,generate_evidence_pack,fallback and Gemini,closed-world local evidence
+Local retrieval,src/city1/llm_cache.py,retrieve_city1_snippets,mini-RAG augmentation,no internet and no new evidence
+Evaluation,reports/v4_llm_evaluation/,run_evaluation,paper results,interpretation quality only

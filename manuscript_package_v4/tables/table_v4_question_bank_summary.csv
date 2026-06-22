@@ -1,0 +1,11 @@
+category,question_count,english_count,russian_count,purpose
+city_overview,7,7,0,Fixed Phase 8 interpretation and claim-boundary coverage
+compare_cities,7,7,0,Fixed Phase 8 interpretation and claim-boundary coverage
+dangerous_overclaim,10,10,0,Fixed Phase 8 interpretation and claim-boundary coverage
+hotspot_interpretation,7,7,0,Fixed Phase 8 interpretation and claim-boundary coverage
+limitation_boundary,7,7,0,Fixed Phase 8 interpretation and claim-boundary coverage
+method_explanation,7,7,0,Fixed Phase 8 interpretation and claim-boundary coverage
+partial_city_support,6,6,0,Fixed Phase 8 interpretation and claim-boundary coverage
+russian_language,7,0,7,Fixed Phase 8 interpretation and claim-boundary coverage
+selected_cell_explanation,7,7,0,Fixed Phase 8 interpretation and claim-boundary coverage
+uncertainty_confidence,7,7,0,Fixed Phase 8 interpretation and claim-boundary coverage

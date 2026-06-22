@@ -1,0 +1,11 @@
+file_path,role,phase,paper_relevance
+app_v4.py,Streamlit interface,V4.4,UI and workflow figure
+src/city1/llm_tools.py,Local evidence tools,V4.2,Tool-grounding method
+src/city1/llm_fallback.py,Deterministic answer engine,V4.3,Fallback method
+src/city1/llm_client.py,Optional Gemini provider,V4.5,Provider architecture
+src/city1/llm_guardrails.py,Claim and grounding checks,V4.6,Safety method
+src/city1/llm_cache.py,Guarded cache and local retrieval,V4.7,Cache/mini-RAG method
+src/city1/llm_evaluation.py,Evaluation engine,V4.8,Evaluation method/results
+data/v4_eval/question_bank.csv,Fixed benchmark prompts,V4.8,Evaluation design
+reports/v4_llm_evaluation/evaluation_summary.csv,Frozen aggregate metrics,V4.8,Results table
+scripts/build_v4_paper_package.py,Idempotent package builder,V4.9,Reproducibility

@@ -1,0 +1,8 @@
+mode,purpose,input,evidence_tools,output,limitations
+ask,General bounded question,city and question,method; claims; city summary,structured answer,frozen evidence only
+city_brief,Compact city overview,city,city; hotspot; confidence; uncertainty,brief with cautions,full V3 only for four cities
+hotspot_review,Screening-class interpretation,city,hotspot and confidence summaries,stable/caution review,not verified hotspot truth
+explain_cell,Selected-cell explanation,city and cell ID,cell and city evidence,proxy interval/confidence explanation,not observed census count
+compare_cities,Compare supported evidence,two or more cities,compare_cities; city summaries,bounded comparison,no truth-accuracy ranking
+claim_checker,Detect unsafe scientific wording,claim text,claim rules,violations and safe rewrite,pattern-based; human review required
+reviewer_safe,Conservative manuscript answer,city and question,full compact evidence pack,claim-bounded response,cannot add missing evidence

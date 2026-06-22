@@ -1,0 +1,9 @@
+claim,allowed_or_forbidden,enforced_by,evidence_source,paper_section
+V4 explains frozen V2/V3 outputs,allowed,tool-only evidence assembly,src/city1/llm_tools.py,3-5
+Fallback supports operation without Gemini,allowed,provider fallback,src/city1/llm_client.py,"5,7"
+V4 improves population prediction accuracy,forbidden,LLM_IMPROVES_PREDICTION_ACCURACY,src/city1/llm_guardrails.py,9
+Cell values are true census counts,forbidden,TRUE_CENSUS_RECONSTRUCTION,V2/V3 limitations,"1,9"
+Intervals are true census uncertainty,forbidden,TRUE_UNCERTAINTY,V3 limitations,"4,9"
+Confidence score is probability,forbidden,CONFIDENCE_AS_PROBABILITY,src/city1/llm_guardrails.py,"5,9"
+Hotspots are screening candidates,allowed,safe terminology,reports/hotspot_prioritization_v3/,4
+V4 can make automated policy decisions,forbidden,AUTOMATED_POLICY_DECISION,src/city1/llm_guardrails.py,9

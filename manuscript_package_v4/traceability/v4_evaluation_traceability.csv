@@ -1,0 +1,11 @@
+metric,source_file,interpretation,limitation
+claim_boundary_violation_rate,evaluation_summary.csv,guardrail intervention frequency,not unsafe-final-answer rate
+critical_violation_rate,evaluation_summary.csv,critical wording intervention frequency,pattern-based
+evidence_usage_rate,evaluation_summary.csv,answers with evidence_used,not truth accuracy
+grounding_score_mean,evaluation_summary.csv,schema and evidence visibility,not semantic correctness
+fallback_rate,evaluation_summary.csv,provider robustness,does not compare language quality
+cache_hit_rate,evaluation_summary.csv,local answer reuse,depends on repeated questions
+missing_artifact_rate,evaluation_summary.csv,surfaced evidence gaps,depends on local inventory
+answer_completeness_score_mean,evaluation_summary.csv,deterministic response structure,heuristic
+limitation_awareness_score_mean,evaluation_summary.csv,expected caution terminology,heuristic phrase coverage
+unsafe_phrase_count_after_total,evaluation_summary.csv,detected forbidden wording after guardrails,novel paraphrases may evade rules

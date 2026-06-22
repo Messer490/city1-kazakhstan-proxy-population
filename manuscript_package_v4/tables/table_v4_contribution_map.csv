@@ -1,0 +1,7 @@
+contribution_id,contribution,evidence_file,paper_section,claim_boundary
+C1,Closed-world local evidence tools over frozen V2/V3 artifacts,src/city1/llm_tools.py,4,Reads evidence; creates no estimates
+C2,Provider-independent deterministic fallback,src/city1/llm_fallback.py,5,Interpretation only
+C3,Optional Gemini language generation with safe fallback,src/city1/llm_client.py,5,Does not improve population accuracy
+C4,Deterministic claim and evidence guardrails,src/city1/llm_guardrails.py,5,Reduces overclaims; does not verify truth
+C5,Local guarded cache and City1-only mini-RAG,src/city1/llm_cache.py,5,Reuses existing evidence only
+C6,Offline interpretation benchmark,src/city1/llm_evaluation.py,6-7,Not population-accuracy validation

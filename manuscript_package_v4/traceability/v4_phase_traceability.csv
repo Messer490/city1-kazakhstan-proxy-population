@@ -1,0 +1,10 @@
+phase,implemented_files,tests,docs,paper_contribution
+V4.1,docs/V4_LLM_ASSISTANT_PLAN.md; docs/V4_EVIDENCE_INVENTORY.md,document audit,plan and inventory,scope and evidence design
+V4.2,src/city1/llm_tools.py,tests/test_llm_tools.py,V4_PHASE2_LOCAL_TOOLS_REPORT.md,closed-world tools
+V4.3,src/city1/llm_fallback.py,tests/test_llm_fallback.py,V4_PHASE3_FALLBACK_ENGINE_REPORT.md,offline fallback
+V4.4,app_v4.py,tests/test_app_v4_smoke.py,V4_PHASE4_STREAMLIT_APP_REPORT.md,usable interface
+V4.5,src/city1/llm_client.py,tests/test_llm_client.py,V4_PHASE5_GEMINI_INTEGRATION_REPORT.md,optional language provider
+V4.6,src/city1/llm_guardrails.py,tests/test_llm_guardrails.py,V4_PHASE6_GUARDRAILS_REPORT.md,claim discipline
+V4.7,src/city1/llm_cache.py,tests/test_llm_cache.py,V4_PHASE7_CACHE_MINIRAG_REPORT.md,local reuse/retrieval
+V4.8,src/city1/llm_evaluation.py; data/v4_eval/question_bank.csv,tests/test_llm_evaluation.py,V4_PHASE8_EVALUATION_BENCHMARK_REPORT.md,72-question benchmark
+V4.9,scripts/build_v4_paper_package.py; manuscript_package_v4/,tests/test_v4_paper_package.py,V4_PHASE9_PAPER_PACKAGE_REPORT.md,reproducible writing package

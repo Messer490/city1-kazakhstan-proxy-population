@@ -1,0 +1,7 @@
+# Title and Abstract Draft
+
+**Preferred title:** City1 v4: A Tool-Grounded LLM Assistant for Reliability-Aware Interpretation of Proxy Population Surfaces
+
+## Abstract
+
+Urban proxy population surfaces can support analysis where fine-scale census labels are unavailable, but their outputs are vulnerable to deterministic over-reading and unsupported language. We present City1 v4, a controlled interpretation layer over frozen calibrated and uncertainty-aware proxy population artifacts. V4 uses local evidence tools, deterministic fallback generation, claim-boundary guardrails, optional Gemini language generation, and a City1-only cache/mini-RAG layer. It does not modify the underlying population model or produce new population estimates. An offline evaluation benchmark contains 72 questions and 288 question/configuration cases across 4 configurations. The benchmark measures evidence use, grounding, claim-boundary interventions, fallback robustness, cache behavior, answer completeness, and limitation awareness; it does not measure population prediction accuracy. In the frozen fallback-safe run, final answers retained evidence provenance and no detected forbidden phrase remained after guardrail processing. These results support V4 as an evidence-linked usability and interpretation layer, while true cell-level census reconstruction, true census uncertainty, and automated policy decisions remain outside its claims.
