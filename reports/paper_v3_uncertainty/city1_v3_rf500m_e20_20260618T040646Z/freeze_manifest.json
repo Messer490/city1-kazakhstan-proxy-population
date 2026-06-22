@@ -1,0 +1,75 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "created_at": "2026-06-18T15:32:54.164582+00:00",
+  "phase": "phase7_paper_facing_evidence_package",
+  "project_version": "city1_v3",
+  "input_roots": {
+    "phase3": "models/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z",
+    "phase4": "outputs/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z",
+    "phase5": "reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z",
+    "phase6_core": "reports/uncertainty_validation_v3/city1_v3_rf500m_e20_20260618T040646Z",
+    "phase6_district": "reports/district_interval_coverage_v3/city1_v3_rf500m_e20_20260618T040646Z",
+    "phase6_external": "reports/external_disagreement_alignment_v3/city1_v3_rf500m_e20_20260618T040646Z"
+  },
+  "phase4_outputs_used": [
+    "outputs/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/almaty_uncertainty_cells.csv",
+    "outputs/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/city_uncertainty_summary.csv",
+    "outputs/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/run_manifest.json"
+  ],
+  "phase5_outputs_used": [
+    "reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/PHASE_5_HOTSPOT_PRIORITIZATION_REPORT.md",
+    "reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/caution_hotspots.csv",
+    "reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/hotspot_city_summary.csv",
+    "reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/stable_hotspots.csv",
+    "reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/top_hotspots_by_city.csv"
+  ],
+  "phase6_outputs_used": [
+    "reports/district_interval_coverage_v3/city1_v3_rf500m_e20_20260618T040646Z/district_interval_city_summary.csv",
+    "reports/external_disagreement_alignment_v3/city1_v3_rf500m_e20_20260618T040646Z/external_disagreement_alignment.csv",
+    "reports/uncertainty_validation_v3/city1_v3_rf500m_e20_20260618T040646Z/PHASE_6_UNCERTAINTY_VALIDATION_REPORT.md",
+    "reports/uncertainty_validation_v3/city1_v3_rf500m_e20_20260618T040646Z/confidence_band_validation_summary.csv",
+    "reports/uncertainty_validation_v3/city1_v3_rf500m_e20_20260618T040646Z/error_uncertainty_alignment.csv",
+    "reports/uncertainty_validation_v3/city1_v3_rf500m_e20_20260618T040646Z/hotspot_stability_summary.csv",
+    "reports/uncertainty_validation_v3/city1_v3_rf500m_e20_20260618T040646Z/interval_coverage_weak_target.csv"
+  ],
+  "paper_tables": [
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/tables/table1_v3_city_coverage.csv",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/tables/table2_uncertainty_interval_coverage.csv",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/tables/table3_error_uncertainty_alignment.csv",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/tables/table4_hotspot_prioritization_summary.csv",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/tables/table5_confidence_band_summary.csv",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/tables/table6_district_external_limitations_summary.csv",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/tables/table7_hotspot_stability_summary.csv"
+  ],
+  "paper_figures": [
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/figures/fig1_v3_pipeline.png",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/figures/fig2_uncertainty_output_example.png",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/figures/fig3_confidence_band_distribution.png",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/figures/fig4_hotspot_prioritization_by_city.png",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/figures/fig5_uncertainty_validation_summary.png",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/figures/fig6_hotspot_stability_summary.png"
+  ],
+  "source_index_files": [
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/source_index/missing_or_partial_inputs.csv",
+    "reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/source_index/source_files_used.csv"
+  ],
+  "limitations": [
+    "v3 uncertainty is not true census uncertainty",
+    "district interval coverage remains partial because frozen district polygon/cell assignment artifacts are missing",
+    "external disagreement alignment is mixed and should not be overstated",
+    "LOCO-like held-out evidence was produced in a bounded local configuration"
+  ],
+  "validation_status": {
+    "phase6_status": "partially completed",
+    "district_interval_status": "partial",
+    "external_alignment_status": "mixed",
+    "hotspot_stability_status": "strongest evidence layer"
+  },
+  "git_commit_if_available": "389a27d",
+  "python_version_if_available": "3.10.7",
+  "notes": [
+    "Phase 7 is evidence consolidation only; no retraining or manuscript writing occurred.",
+    "Curated Phase 3-6 copies stored under reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/outputs.",
+    "Figure limitations file present: False"
+  ]
+}

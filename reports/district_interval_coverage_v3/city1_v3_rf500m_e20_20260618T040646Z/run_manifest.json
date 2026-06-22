@@ -1,0 +1,18 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "phase": "phase6_district_interval_coverage",
+  "created_at_utc": "2026-06-18T13:16:10.988494+00:00",
+  "district_report_root": "reports/district_benchmark_v2",
+  "output_root": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\district_interval_coverage_v3\\city1_v3_rf500m_e20_20260618T040646Z",
+  "cities": [
+    "almaty",
+    "astana",
+    "shymkent"
+  ],
+  "generated_outputs": {
+    "district_interval_coverage": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\district_interval_coverage_v3\\city1_v3_rf500m_e20_20260618T040646Z\\district_interval_coverage.csv",
+    "district_interval_city_summary": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\district_interval_coverage_v3\\city1_v3_rf500m_e20_20260618T040646Z\\district_interval_city_summary.csv"
+  },
+  "status": "partial",
+  "blocker_note": "District interval coverage is partial because frozen district polygon/cell assignment artifacts are not available in the light package. The output carries forward p50-only district comparison from the v2 benchmark."
+}

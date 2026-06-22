@@ -1,0 +1,30 @@
+# Unified City1 Framework Manuscript Checklist
+
+- [x] New unified package created under `manuscript_package_city1_unified/`.
+- [x] Existing deterministic and uncertainty manuscript packages were not overwritten.
+- [x] Main manuscript uses a two-stage framework narrative rather than a pasted dual-paper narrative.
+- [x] Contribution Map is included in the Introduction.
+- [x] Deterministic calibrated proxy baseline content is preserved.
+- [x] Uncertainty-aware extension content is preserved.
+- [x] Weak-target equations are preserved.
+- [x] Official-total calibration equation and fallback logic are preserved.
+- [x] Ensemble calibration and uncertainty equations are preserved.
+- [x] Confidence-score formula is preserved.
+- [x] Hotspot-class definitions are preserved.
+- [x] Deterministic validation layers are preserved.
+- [x] Uncertainty validation layers are preserved.
+- [x] District evidence remains explicitly partial.
+- [x] External products are never treated as ground truth.
+- [x] `confidence_score` is never treated as a probability of correctness.
+- [x] No true census reconstruction claim appears.
+- [x] No true census-uncertainty claim appears.
+- [x] Future LLM layer is described only as future work.
+- [x] Traceability files were created.
+- [x] Unique source figures and tables were either retained, merged, moved to supplement, or logged.
+- [x] All `\input{}` targets resolve from the unified package root.
+- [x] All `\includegraphics{}` targets resolve from the unified package root.
+- [x] No missing `\ref{}` labels were detected.
+- [x] No missing bibliography keys were detected.
+- [x] No forbidden claim phrases were detected in unified `.tex` files.
+- [ ] Local TeX compilation completed successfully.
+- [ ] Overleaf visual pass completed.

@@ -1,0 +1,5 @@
+city,n_cells,official_total,sum_p50,median_relative_uncertainty,share_high_confidence,share_medium_confidence,share_low_confidence,osm_completeness_score,osm_completeness_label,interpretation_note
+Almaty,3078,2351424,2351424.0,0.1696593416621771,0.2290448343079922,0.6617933723196882,0.1091617933723196,75.827,good,Strongest freeze-city support case with comparatively better completeness and a meaningful high-confidence share.
+Astana,3473,1649242,1649242.0,0.2808163445048885,0.0,0.6372012669162108,0.3627987330837892,65.014,moderate,Confidence burden is heavier here; treat the surface as a bounded screening layer that requires stronger local verification.
+Semey,1033,315382,315382.0,0.3493186301151472,0.0338818973862536,0.7967086156824782,0.1694094869312681,74.102,good,"Intermediate support case: useful for screening and interpretation, but not for aggressive uncertainty claims."
+Shymkent,4939,1298279,1298279.0,0.1752000865036412,0.0,0.6989269082810285,0.3010730917189714,65.541,moderate,Confidence burden is heavier here; treat the surface as a bounded screening layer that requires stronger local verification.

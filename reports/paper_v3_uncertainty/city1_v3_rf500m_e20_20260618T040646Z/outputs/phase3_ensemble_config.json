@@ -1,0 +1,37 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "model_version": "city1_v3_rf500m_uncertainty",
+  "model_name": "random_forest_uncertainty",
+  "grid_cell_size_meters": 500,
+  "ensemble_size": 20,
+  "base_random_state": 42,
+  "bootstrap_within_city": true,
+  "quantiles": [
+    0.1,
+    0.5,
+    0.9
+  ],
+  "use_log_target": true,
+  "relative_epsilon": 1e-06,
+  "feature_columns": [
+    "Building_Count",
+    "Building_Area",
+    "Residential_Area",
+    "Commercial_Area",
+    "Retail_Area",
+    "Public_Area",
+    "Road_Length",
+    "Bus_Stop_Count",
+    "Park_Area",
+    "Building_With_Levels_Count",
+    "Mean_Building_Levels",
+    "Total_Floor_Area",
+    "Schools_Count",
+    "Hospitals_Count",
+    "Parks_Shops_Count",
+    "POI_Access_Index",
+    "Combined_Index"
+  ],
+  "official_totals_reference": "data\\external\\city_population_reference_v2.csv",
+  "city_registry_reference": "data\\external\\city_status_registry_v2.csv"
+}

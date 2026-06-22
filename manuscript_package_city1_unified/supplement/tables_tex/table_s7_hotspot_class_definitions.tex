@@ -1,0 +1,28 @@
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.15}
+\caption{Hotspot-class definitions used in the uncertainty-aware stage. Short display labels are shown in the table; exact code identifiers are listed below.}
+\label{tab:s7-hotspot-class-definitions}
+\begin{tabularx}{\textwidth}{L{3.25cm} Y Y}
+\toprule
+Display class & Operational definition & Interpretation rule \\
+\midrule
+High-value / high-confidence & Top decile by calibrated P50 within city and confidence band = high & Strongest screening candidate; not verified census truth \\
+High-value / low-confidence & Top decile by calibrated P50 within city and confidence band = low & Potentially important hotspot that remains review-oriented \\
+Medium-value / high-confidence & P50 between city P75 and P90 with confidence band = high & Secondary stable screening candidate \\
+Low-value / high-uncertainty & Below city median P50 with confidence band = low & Caution-heavy class; not a firm planning target \\
+Not priority & All remaining cells & Background class outside the prioritization focus \\
+\bottomrule
+\end{tabularx}
+\par\medskip
+\noindent\footnotesize Exact identifiers:
+\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\topsep}{0pt}
+\item \code{high_value_high_confidence}
+\item \code{high_value_low_confidence}
+\item \code{medium_value_high_confidence}
+\item \code{low_value_high_uncertainty}
+\item \code{not_priority}
+\end{itemize}
+\end{table}

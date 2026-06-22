@@ -1,0 +1,19 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "required_files": [
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\outputs\\v3_uncertainty\\city1_v3_rf500m_e20_20260618T040646Z\\almaty_uncertainty_cells.csv",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\outputs\\v3_uncertainty\\city1_v3_rf500m_e20_20260618T040646Z\\astana_uncertainty_cells.csv",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\outputs\\v3_uncertainty\\city1_v3_rf500m_e20_20260618T040646Z\\semey_uncertainty_cells.csv",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\outputs\\v3_uncertainty\\city1_v3_rf500m_e20_20260618T040646Z\\shymkent_uncertainty_cells.csv",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\outputs\\v3_uncertainty\\city1_v3_rf500m_e20_20260618T040646Z\\city_uncertainty_summary.csv",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\outputs\\v3_uncertainty\\city1_v3_rf500m_e20_20260618T040646Z\\run_manifest.json",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\hotspot_prioritization_v3\\city1_v3_rf500m_e20_20260618T040646Z\\hotspot_city_summary.csv",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\hotspot_prioritization_v3\\city1_v3_rf500m_e20_20260618T040646Z\\top_hotspots_by_city.csv",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\hotspot_prioritization_v3\\city1_v3_rf500m_e20_20260618T040646Z\\caution_hotspots.csv",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\hotspot_prioritization_v3\\city1_v3_rf500m_e20_20260618T040646Z\\stable_hotspots.csv",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\hotspot_prioritization_v3\\city1_v3_rf500m_e20_20260618T040646Z\\PHASE_5_HOTSPOT_PRIORITIZATION_REPORT.md"
+  ],
+  "missing_files": [],
+  "validation_errors": [],
+  "ok": true
+}

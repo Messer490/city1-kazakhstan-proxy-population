@@ -1,0 +1,18 @@
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Contribution Map for the unified City1 framework. The table makes explicit how the calibrated baseline stage and the uncertainty-aware stage connect within one paper.}
+\label{tab:contribution-map}
+\begin{tabular}{p{3.0cm}p{1.2cm}p{3.0cm}p{3.0cm}p{3.8cm}}
+\toprule
+Contribution & Stage & Method / artifact & Main evidence & Claim boundary \\
+\midrule
+Reproducible calibrated proxy population surface & Stage 1 & weak target, Random Forest, 500 m grid, official-total calibration & LOCO, spatial block CV, grid benchmark, external benchmark, ablation & supports proxy-surface credibility, not cell-level census truth \\
+Multi-level structural validation & Stage 1 & district benchmark, WorldPop/GHS-POP comparison, qualitative plausibility & district, external, and qualitative evidence & supports structural plausibility, not ground-truth validation \\
+Uncertainty-aware interpretation layer & Stage 2 & calibrated ensemble, P10/P50/P90, interval width, relative uncertainty & interval coverage and error-width alignment & supports bounded uncertainty behavior, not true census uncertainty \\
+Confidence-aware hotspot prioritization & Stage 2 & confidence bands and hotspot classes & confidence-band separation and hotspot stability & supports screening reliability, not verified population-hotspot truth \\
+Tool-grounded interpretation pathway & Future extension & future tool-grounded LLM layer using calibrated surface, intervals, hotspot classes, and limitations & not evaluated in current paper & future work only, not a completed result \\
+\bottomrule
+\end{tabular}
+\end{table}
+

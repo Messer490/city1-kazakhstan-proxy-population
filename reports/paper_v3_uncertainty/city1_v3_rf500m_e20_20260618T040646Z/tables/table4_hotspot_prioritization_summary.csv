@@ -1,0 +1,5 @@
+city,n_priority_cells,n_high_value_high_confidence,n_high_value_low_confidence,n_medium_value_high_confidence,n_low_value_high_uncertainty,mean_confidence_priority_cells,median_relative_uncertainty_priority_cells,interpretation_note
+Almaty,842,212,0,310,320,0.6087915937080366,0.0595535240458481,Almaty is the strongest hotspot-screening case because stable high-confidence priority cells are present.
+Astana,712,0,4,0,708,0.32769005699463,0.423194965090475,"Astana has potentially important hotspots, but they remain review-oriented because low-confidence priority cells are present."
+Semey,169,4,19,10,136,0.3973388234220495,0.5908668460677323,"Semey has potentially important hotspots, but they remain review-oriented because low-confidence priority cells are present."
+Shymkent,1256,0,89,0,1167,0.3234581443297257,0.3117060622409306,"Shymkent has potentially important hotspots, but they remain review-oriented because low-confidence priority cells are present."

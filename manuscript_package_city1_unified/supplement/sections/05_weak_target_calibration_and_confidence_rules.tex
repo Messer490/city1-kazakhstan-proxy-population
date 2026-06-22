@@ -1,0 +1,46 @@
+\section{S5. Weak Target, Calibration, and Confidence Rules}
+
+The weak-target construction used by the deterministic stage is:
+\[
+s_i = \sum_{k \in K} w_k \cdot \mathrm{MinMax}\!\left(\log\!\left(1 + \max(x_{ik}, 0)\right)\right),
+\]
+\[
+\tilde{s}_i = s_i + \epsilon,
+\qquad
+q_i = \frac{\tilde{s}_i}{\sum_{j \in c} \tilde{s}_j},
+\qquad
+y_i^{\mathrm{weak}} = q_i \cdot P_c.
+\]
+Here $P_c$ is the official total for city $c$, so the weak target is an officially anchored proxy allocation rather than a ground-truth cell label.
+
+The deterministic calibration rule is:
+\[
+\hat{y}_i^{\mathrm{cal}} = \hat{y}_i \cdot \frac{P_c}{\sum_{j \in c} \hat{y}_j}.
+\]
+If the within-city prediction sum is non-positive, the workflow falls back to uniform allocation.
+
+The uncertainty-aware confidence formula is:
+\[
+\mathrm{confidence}_i =
+\operatorname{clip}\!\left(
+0.40\,s_i +
+0.25\,o_c +
+0.20\,e_i +
+0.15\,d_c, 0, 1
+\right),
+\]
+where
+\[
+s_i = 1 - \operatorname{clip}\!\left(
+\frac{r_i}{\max(q_{0.90}^{(c)},\epsilon)}, 0, 1
+\right),
+\qquad
+r_i = \frac{\mathrm{P90}_i - \mathrm{P10}_i}{\max(\mathrm{P50}_i,\epsilon)}.
+\]
+
+Supplementary Table~S6 records the weak-target weights, and Table~S7 records the hotspot class definitions used for screening.
+
+\input{supplement/tables_tex/table_s6_weak_label_weights.tex}
+
+\input{supplement/tables_tex/table_s7_hotspot_class_definitions.tex}
+

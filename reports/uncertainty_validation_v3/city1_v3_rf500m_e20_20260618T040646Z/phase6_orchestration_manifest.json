@@ -1,0 +1,12 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "phase": "phase6_uncertainty_validation",
+  "created_at_utc": "2026-06-18T13:16:11.422812+00:00",
+  "status": "partially completed",
+  "core_output_dir": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z",
+  "district_output_dir": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\district_interval_coverage_v3\\city1_v3_rf500m_e20_20260618T040646Z",
+  "external_output_dir": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\external_disagreement_alignment_v3\\city1_v3_rf500m_e20_20260618T040646Z",
+  "phase6_report": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\PHASE_6_UNCERTAINTY_VALIDATION_REPORT.md",
+  "core_blockers": [],
+  "district_partial": true
+}

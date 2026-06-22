@@ -1,0 +1,26 @@
+\section*{Data and Code Availability}
+
+The City1 framework codebase is available in the public repository \url{https://github.com/Messer490/city1-kazakhstan-proxy-population}.
+
+Two manuscript-oriented packages are retained separately:
+\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\topsep}{0pt}
+\item manuscript/evidence package: \pathcode{manuscript_package_city1_unified/}
+\item deterministic baseline package: \pathcode{manuscript_package_v2/}
+\end{itemize}
+
+The deterministic source package records commit \pathcode{92cc78d7880af1388fcbf3a5d7aa8db57c5c4512} in its data-and-code note.
+
+The uncertainty-aware reference run is \pathcode{city1_v3_rf500m_e20_20260618T040646Z}. Its paper-facing evidence package is retained under \pathcode{reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/}. The corresponding model artifacts are stored under \pathcode{models/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/}, and the city outputs are stored under \pathcode{outputs/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/}. The uncertainty paper-facing package records commit \pathcode{389a27d} in its freeze manifest.
+
+For runtime and inference use, a separate runnable snapshot is archived as \pathcode{city1_runtime_package_20260622_061747.zip}. This runtime archive is distinct from the manuscript/evidence packages and is intended for execution-oriented reuse rather than manuscript provenance.
+
+Key external inputs are retained separately and remain subject to their original access conditions:
+\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\topsep}{0pt}
+\item official-total reference table: \pathcode{data/external/city_population_reference_v2.csv}
+\item city-status registry: \pathcode{data/external/city_status_registry_v2.csv}
+\item district benchmark inputs: \pathcode{data/external/district_benchmark/}
+\item Phase 5 hotspot report: \pathcode{reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/}
+\item Phase 6 uncertainty-validation report: \pathcode{reports/uncertainty_validation_v3/city1_v3_rf500m_e20_20260618T040646Z/}
+\end{itemize}
+
+Third-party official and benchmark inputs remain subject to their original access conditions and licensing. An archival DOI will be added after repository deposit.

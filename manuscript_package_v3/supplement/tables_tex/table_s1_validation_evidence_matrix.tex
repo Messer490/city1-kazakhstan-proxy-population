@@ -1,0 +1,19 @@
+\begin{longtable}{L{2.7cm}L{3.2cm}L{4.3cm}L{4.3cm}}
+\caption{Validation-evidence matrix for City1 v3. The table makes explicit what each evidence layer supports and where its claim boundary stops.}\label{tab:s1-validation-evidence}\\
+\toprule
+Evidence layer & Main artifact & What it supports & What it does not support \\
+\midrule
+\endfirsthead
+\toprule
+Evidence layer & Main artifact & What it supports & What it does not support \\
+\midrule
+\endhead
+Interval coverage against proxy targets & Table 2, Figure 5 & Bounded interval behavior against weak/proxy targets under LOCO-like and inference-only proxy checks & True census coverage or full probabilistic calibration \\
+Error-vs-uncertainty alignment & Table 3, Figure 5 & Positive association between proxy-target error and uncertainty width & Uniform ranking between confidence score and true error, or truth-level calibration \\
+District aggregation evidence & Table 6 & Partial administrative support after aggregation for Almaty, Astana, and Shymkent & Full district interval coverage or cell-level administrative truth \\
+External disagreement alignment & Table 6 & Structural comparison context against WorldPop and GHS-POP & External products as ground truth or a strong claim that disagreement always rises with uncertainty \\
+Hotspot stability & Table 7, Figure 6 & Separation between stable screening classes and caution-heavy classes & Definitive verification of hotspot correctness \\
+Confidence-band validation & Table 5, Figure 3 & Separation of uncertainty burden across high, medium, and low interpretation bands & Probability of correctness or direct truth probability \\
+\bottomrule
+\end{longtable}
+

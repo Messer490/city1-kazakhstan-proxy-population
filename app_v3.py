@@ -99,6 +99,10 @@ def _serialize_result(result, save_paths: dict[str, str] | None = None) -> dict[
     for column in ("p50_display", "relative_uncertainty_display", "confidence_score_display"):
         output_gdf[column] = output_frame[column].to_numpy()
 
+    run_id = str(output_frame["run_id"].iloc[0]) if "run_id" in output_frame.columns and not output_frame.empty else "unknown_run"
+    city_slug = str(output_frame["city_slug"].iloc[0]) if "city_slug" in output_frame.columns and not output_frame.empty else "unknown_city"
+    result_key = "".join(ch if ch.isalnum() or ch in ("_", "-") else "_" for ch in f"{run_id}_{city_slug}")
+
     return {
         "official_population": int(result.official_population),
         "raw_prediction_sum": float(result.raw_prediction_sum),
@@ -108,6 +112,9 @@ def _serialize_result(result, save_paths: dict[str, str] | None = None) -> dict[
         "osm_completeness": result.osm_completeness.to_dict(),
         "uncertainty_interval_summary": result.uncertainty_interval_summary or {},
         "save_paths": save_paths or {},
+        "run_id": run_id,
+        "city_slug": city_slug,
+        "result_key": result_key,
     }
 
 
@@ -213,11 +220,11 @@ def _render_result(result_payload: dict[str, object]) -> None:
     with map_columns[0]:
         st.subheader("Population Surface")
         st.caption("Frozen v3 final surface uses the calibrated median `p50` output.")
-        st_folium(_build_population_map(result_payload), use_container_width=True, height=620, key="city1_v3_population_map")
+        st_folium(_build_population_map(result_payload), use_container_width=True, height=620, key=f"city1_v3_population_map_{result_payload.get('result_key', 'current')}")
     with map_columns[1]:
         st.subheader("Uncertainty Overlay")
         st.caption("Relative interval width `(p90 - p10) / max(p50, epsilon)`; warmer colors mean higher uncertainty.")
-        st_folium(_build_uncertainty_map(result_payload), use_container_width=True, height=620, key="city1_v3_uncertainty_map")
+        st_folium(_build_uncertainty_map(result_payload), use_container_width=True, height=620, key=f"city1_v3_uncertainty_map_{result_payload.get('result_key', 'current')}")
 
     st.subheader("Output Preview")
     st.dataframe(
@@ -277,6 +284,14 @@ default_label = _default_model_label(model_mapping)
 default_index = model_labels.index(default_label) if default_label in model_mapping else 0
 default_city = "Semey, Kazakhstan" if "Semey, Kazakhstan" in shortcut_queries else (shortcut_queries[0] if shortcut_queries else "Semey, Kazakhstan")
 
+# Streamlit reruns the script after widget interactions, including map interactions.
+# Keep the last generated payload in session_state so the result does not disappear
+# immediately after it is rendered. This changes only UI state handling; it does not
+# change inference, calibration, model loading, or any paper-facing numerical results.
+st.session_state.setdefault("city1_v3_result_payload", None)
+st.session_state.setdefault("city1_v3_result_meta", {})
+st.session_state.setdefault("city1_v3_error", None)
+
 with st.sidebar:
     st.header("Run v3 Inference")
     if shortcut_queries:
@@ -287,7 +302,13 @@ with st.sidebar:
     selected_label = st.selectbox("Uncertainty model", options=model_labels, index=default_index)
     save_outputs = st.checkbox("Save canonical outputs to outputs/v3_uncertainty/<run_id>", value=True)
     run_button = st.button("Generate Uncertainty-Aware Surface", type="primary")
+    clear_button = st.button("Clear current result")
     st.caption("Frozen v3 core: random_forest + fixed 500 m grid + official-total calibration + ensemble uncertainty.")
+
+if clear_button:
+    st.session_state["city1_v3_result_payload"] = None
+    st.session_state["city1_v3_result_meta"] = {}
+    st.session_state["city1_v3_error"] = None
 
 if run_button:
     try:
@@ -297,7 +318,30 @@ if run_button:
             if save_outputs:
                 saved = save_city_uncertainty_outputs(result, DEFAULT_OUTPUT_ROOT / str(result.output_frame["run_id"].iloc[0]))
                 save_paths = {name: str(path) for name, path in saved.items()}
+
         payload = _serialize_result(result, save_paths=save_paths)
-        _render_result(payload)
+        st.session_state["city1_v3_result_payload"] = payload
+        st.session_state["city1_v3_result_meta"] = {
+            "place_name": place_name,
+            "model_label": selected_label,
+            "save_outputs": save_outputs,
+        }
+        st.session_state["city1_v3_error"] = None
     except CityInferenceError as exc:
-        st.error(str(exc))
+        st.session_state["city1_v3_error"] = str(exc)
+
+if st.session_state.get("city1_v3_error"):
+    st.error(st.session_state["city1_v3_error"])
+
+cached_payload = st.session_state.get("city1_v3_result_payload")
+if cached_payload is not None:
+    meta = st.session_state.get("city1_v3_result_meta", {})
+    st.subheader("City1 v3 Uncertainty-Aware Proxy Population Surface")
+    st.caption(
+        "Showing the latest generated result kept in Streamlit session state. "
+        "Changing sidebar values will not overwrite it until you click Generate again. "
+        f"City: {meta.get('place_name', 'unknown')}; model: {meta.get('model_label', 'unknown')}."
+    )
+    _render_result(cached_payload)
+else:
+    st.info("Select a city and v3 uncertainty model, then click Generate Uncertainty-Aware Surface.")

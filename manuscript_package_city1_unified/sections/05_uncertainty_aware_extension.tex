@@ -1,0 +1,91 @@
+\section{Uncertainty-Aware Extension}
+
+Figure~\ref{fig:city1-framework} shows the full City1 framework. Stage 1 builds the deterministic calibrated proxy baseline. Stage 2 adds a reliability-aware interpretation layer so that the calibrated surface is not over-read as equally reliable everywhere. Stage 2 does not replace Stage 1. It consumes the calibrated baseline, asks how stable that baseline looks under ensemble variation, and then translates that stability into bounded screening categories.
+
+\begin{figure}[H]
+\centering
+\input{figures/figure_city1_unified_framework.tex}
+\caption{Unified City1 framework diagram. Stage 1 constructs and validates a deterministic calibrated proxy population surface under missing cell-level truth. Stage 2 extends that surface with calibrated ensemble intervals, confidence bands, and hotspot screening. A future tool-grounded interpretation layer is shown only as later work.}
+\label{fig:city1-framework}
+\end{figure}
+
+\subsection{Ensemble Random Forest configuration}
+
+The uncertainty-aware stage preserves the same fixed 500 m grid and the same 17 frozen feature columns used by the deterministic baseline, but wraps the production model in an ensemble-of-runs design. The reference uncertainty package uses 20 Random Forest members, within-city bootstrap resampling, log-target training, and a training package with 8 cities and 16,132 rows. The reference inference package covers four cities: Almaty, Astana, Semey, and Shymkent.
+
+This is not a new truth model. It is an interpretation layer built on top of the calibrated proxy surface. The purpose is to expose reliability differences that are hidden if one only looks at the deterministic median surface.
+
+\subsection{Calibrated ensemble members}
+
+Let $\hat{y}^{(m)}_{i,c}$ denote the raw prediction for cell $i$ in city $c$ from ensemble member $m$. Each member is calibrated separately to the official city total $P_c$:
+\[
+\hat{y}^{(m),\mathrm{cal}}_{i,c}=
+\hat{y}^{(m)}_{i,c}
+\cdot
+\frac{P_c}{\sum_{j \in c}\hat{y}^{(m)}_{j,c}},
+\]
+whenever the within-city raw sum is positive. If the raw sum is non-positive, the same uniform fallback logic is used as in the deterministic stage. This preserves the official-total accounting identity at the ensemble-member level rather than calibrating only after interval aggregation.
+
+\subsection{P10/P50/P90 interval outputs}
+
+The calibrated member ensemble is summarized per cell through empirical quantiles:
+\[
+\mathrm{P10}_i = Q_{0.10}\!\left(\hat{y}^{(m),\mathrm{cal}}_{i,c}\right), \qquad
+\mathrm{P50}_i = Q_{0.50}\!\left(\hat{y}^{(m),\mathrm{cal}}_{i,c}\right), \qquad
+\mathrm{P90}_i = Q_{0.90}\!\left(\hat{y}^{(m),\mathrm{cal}}_{i,c}\right).
+\]
+The median surface, $\mathrm{P50}$, is the canonical final proxy surface for the uncertainty-aware stage and remains the backward-compatible population estimate.
+
+Interval width and relative uncertainty are defined as:
+\[
+\mathrm{width}_i = \mathrm{P90}_i - \mathrm{P10}_i,
+\qquad
+r_i = \frac{\mathrm{width}_i}{\max(\mathrm{P50}_i,\epsilon)}.
+\]
+These are proxy uncertainty summaries inside the calibrated proxy framework, not true census-uncertainty intervals.
+
+The quantiles should therefore be read as a stability envelope around the proxy surface. P50 is the canonical surface for reporting, while P10 and P90 provide a bounded spread that helps distinguish cells with tighter support from cells with broader support. The point is not to claim probabilistic ground truth, but to prevent the median surface from being interpreted as equally certain everywhere.
+
+\subsection{Confidence score and confidence bands}
+
+The uncertainty-aware stage introduces a bounded interpretation-confidence score rather than a probability of correctness. A model-stability component first measures how large a cell's relative uncertainty is compared with the upper uncertainty tail in its city:
+\[
+s_i = 1 - \operatorname{clip}\!\left(
+\frac{r_i}{\max(q_{0.90}^{(c)},\epsilon)}, 0, 1
+\right).
+\]
+This stability term is then combined with city-level support terms for OSM completeness, external comparison context, and internal district-support context:
+\[
+\mathrm{confidence}_i =
+\operatorname{clip}\!\left(
+0.40\,s_i +
+0.25\,o_c +
+0.20\,e_i +
+0.15\,d_c, 0, 1
+\right).
+\]
+Here $o_c$ is the OSM support score, $e_i$ is the best available external-support scalar or neutral fallback, and $d_c$ is the internal district-support scalar or neutral fallback. Confidence bands are then assigned with fixed thresholds: high ($\ge 0.70$), medium ($[0.40,0.70)$), and low ($<0.40$).
+
+The framework is explicit about the meaning of this quantity: \texttt{confidence\_score} is an interpretation-confidence score, not a truth probability.
+
+Confidence bands are then simply ordinal wrappers around this score. They help separate stronger and weaker interpretation contexts, but they do not mean that a high-confidence cell is “correct” and a low-confidence cell is “incorrect.” The bands are screening aids, not correctness probabilities.
+
+\subsection{Hotspot prioritization classes}
+
+The practical use-case of the uncertainty-aware stage is hotspot screening. Cells are ranked within each city by calibrated median value, and the class vocabulary distinguishes stable screening candidates from caution-heavy ones:
+
+\begin{itemize}
+\item \texttt{high\_value\_high\_confidence}
+\item \texttt{high\_value\_low\_confidence}
+\item \texttt{medium\_value\_high\_confidence}
+\item \texttt{low\_value\_high\_uncertainty}
+\item \texttt{not\_priority}
+\end{itemize}
+
+These classes are screening categories, not verified population-hotspot truth. Their purpose is to help users identify where the calibrated proxy surface is more stable for exploratory prioritization and where it should be treated more cautiously.
+
+The practical consequence is straightforward: hotspot classes are useful when the task is triage, prioritization, or exploratory comparison, but they should not be rebranded as verified hotspots. That distinction matters because it is exactly where over-reading tends to enter the interpretation of proxy surfaces.
+
+\subsection{Bounded uncertainty-validation setting}
+
+The reference uncertainty package retains one important limitation. The full inference package uses 20 ensemble members, but one held-out LOCO-like validation pass was executed with 5 ensemble members and 60 trees per member for cost control. This bounded local configuration remains scientifically useful, but it limits how strongly the LOCO-like interval evidence should be stated. The unified manuscript carries that limitation explicitly instead of hiding it.

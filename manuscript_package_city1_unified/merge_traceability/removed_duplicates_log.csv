@@ -1,0 +1,8 @@
+removed_text_summary,reason,where_content_is_preserved,notes
+Repeated proxy-not-truth framing from separate deterministic and uncertainty introductions,duplicate_wording_removed,sections/01_introduction.tex,"merged into one unified statement of calibrated proxy surface and reliability-aware interpretation"
+Repeated related-work discussion of gridded population products,duplicate_wording_removed,sections/02_related_work.tex,"kept once with merged subsections"
+Separate City1 v2 baseline recap section from uncertainty manuscript,duplicate_wording_removed,sections/01_introduction.tex; sections/03_study_design_and_data.tex; sections/04_deterministic_proxy_surface_method.tex,"scientific content preserved through integrated stage transition instead of standalone recap section"
+Repeated calibration-boundary wording across deterministic conclusion and deterministic availability note,duplicate_wording_removed,sections/04_deterministic_proxy_surface_method.tex; sections/10_limitations.tex; sections/12_conclusion.tex,"kept where method and claims are most relevant"
+Repeated uncertainty claim-boundary wording across v3 introduction, discussion, limitations, and paper summary,duplicate_wording_removed,sections/05_uncertainty_aware_extension.tex; sections/09_integrated_discussion.tex; sections/10_limitations.tex,"consolidated without dropping the limitation content"
+Separate v2 and v3 figure-roadmap prose,duplicate_wording_removed,README.md; merge_traceability/table_figure_traceability.csv,"preserved as one unified package inventory"
+

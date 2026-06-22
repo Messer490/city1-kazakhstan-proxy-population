@@ -1,0 +1,21 @@
+\section{Related Work}
+
+\subsection{Gridded population mapping and dasymetric redistribution}
+
+Gridded population mapping has evolved from simple areal representations toward increasingly sophisticated methods for redistributing aggregated totals into regular grid cells \cite{Leyk2019,Mennis2009}. A major branch of this literature uses top-down redistribution: official or census-based counts are allocated across space with land cover, built-up area, buildings, infrastructure, or other ancillary covariates \cite{Mennis2009,Stevens2015}. This logic is closely related to dasymetric mapping, where ancillary spatial evidence constrains where population can plausibly be allocated within a larger reporting unit.
+
+Large-scale products such as WorldPop and the Global Human Settlement Layer are especially relevant here because they show both the usefulness and the limits of gridded population products. WorldPop combines administrative counts with geospatial covariates in model-based redistribution workflows, including random-forest-based disaggregation \cite{Stevens2015,Sorichetta2015,Lloyd2017,WorldPopMethods}. GHS-POP and related GHSL tools emphasize transparent built-up-anchored redistribution frameworks at global scale \cite{Freire2016,GHSL2023,GHSPOP2G2020}. Both families are scientifically useful comparators, but neither should be mistaken for cell-level ground truth in every city.
+
+\subsection{Proxy modeling under missing cell-level truth}
+
+In local urban settings, the central challenge is often not the absence of population information altogether, but the mismatch between the coarse level at which population is observed and the fine level at which analysts want to work. Recent studies therefore use combinations of buildings, roads, points of interest, and other geospatial features to derive proxy or model-based population surfaces \cite{Qiu2020,Pirowski2024,Popcorn2024}. In these settings, official totals can still anchor the city-level mass even when cell-level truth is unavailable.
+
+This is where weak targets become methodologically important. Rather than pretending that a hidden census can be directly observed, weak-target workflows construct a structured proxy target from available spatial signals and then learn against that bounded target. The resulting product is best understood as a calibrated proxy surface rather than a true cell-level census surface.
+
+\subsection{Need for uncertainty-aware interpretation}
+
+Validation under missing cell-level truth is intrinsically multi-layered. Weak targets, aggregated administrative checks, external structural comparison, and qualitative plausibility can each contribute evidence, but none of them alone resolves cell-level truth \cite{Leyk2019,Thomson2021,Yin2021}. This creates an additional interpretive problem: a deterministic proxy surface can look uniformly authoritative even when support conditions vary materially across cities and within cities.
+
+That gap motivates the uncertainty-aware stage of City1. The objective is not to convert a proxy surface into a true census-uncertainty model. The objective is to show where the calibrated proxy surface appears more stable, where it appears weaker, and where hotspot screening should be treated more cautiously. In this sense, the uncertainty-aware extension is a reliability-aware interpretation layer built on top of the calibrated baseline, not a replacement of the baseline task identity.
+
+This also aligns the paper with a broader fitness-for-use perspective: the question is not only whether a proxy surface can be produced, but whether it can be read responsibly for the task at hand. City1 answers that question by pairing calibration with a bounded interpretation layer.

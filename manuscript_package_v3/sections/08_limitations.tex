@@ -1,0 +1,17 @@
+\section{Limitations}
+
+The limitations of City1 v3 are substantive and must remain explicit.
+
+\begin{itemize}
+\item City1 v3 does not estimate true census uncertainty. Its intervals quantify model/evidence uncertainty inside a calibrated proxy-target framework.
+\item Most validation remains tied to weak or proxy targets rather than observed cell-level census labels. This constrains how strongly interval coverage can be interpreted.
+\item District interval coverage remains partial because the frozen light package does not include the offline district polygon/cell assignment artifacts required for true p10/p50/p90 district coverage checks.
+\item External products such as WorldPop and GHS-POP are structural comparators, not ground truth. Mixed external disagreement alignment therefore cannot be interpreted as a failure against truth, but it also cannot be turned into strong supporting evidence.
+\item \texttt{confidence\_score} is an interpretation-confidence score, not a truth probability or correctness probability.
+\item The LOCO-like held-out evidence in Phase 6 used a bounded local configuration with 5 ensemble members and 60 trees per member rather than the full 20-member runtime package.
+\item Ensemble size and local compute limits mean that v3 should be read as a pragmatic first uncertainty layer, not as the final word on proxy-surface uncertainty.
+\item The resulting intervals and hotspot classes are useful for screening and interpretation, but not for definitive administrative accounting or fully automated operational decisions.
+\end{itemize}
+
+These limitations do not erase the usefulness of the package. They define what the package is for. City1 v3 is strongest when used to expose where the proxy surface is more stable, where it is less stable, and where additional evidence would be most valuable before stronger interpretation.
+

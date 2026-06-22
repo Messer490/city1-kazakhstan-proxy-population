@@ -1,0 +1,32 @@
+\begingroup
+\scriptsize
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{L{0.15\textwidth}L{0.15\textwidth}L{0.18\textwidth}L{0.18\textwidth}L{0.18\textwidth}L{0.10\textwidth}}
+\caption{Combined evidence matrix for the unified City1 framework.}\label{tab:s3-combined-evidence}\\
+\toprule
+Evidence layer & Main artifact & Question answered & What it supports & What it does not support & Stage supported \\
+\midrule
+\endfirsthead
+\toprule
+Evidence layer & Main artifact & Question answered & What it supports & What it does not support & Stage supported \\
+\midrule
+\endhead
+LOCO & Table 3 & Does the calibrated baseline transfer to unseen cities? & Cross-city transferability under data scarcity & Cell-level truth validation & baseline \\
+Spatial block CV & Table 3 & Does within-city performance remain stable under stricter separation? & Within-city robustness & Unseen-city truth validation & baseline \\
+Grid benchmark & Table 3, Figure 2 & Which grid best balances detail and stability? & Fixed production choice at 500 m & A universal optimal-grid claim & baseline \\
+OSM completeness & Figure 3, Table 2 & How strong is open-data support by city? & Interpretation context & Predictive accuracy proof & baseline \\
+District benchmark & Table 4, Figure 3 & Does the baseline remain coherent after aggregation? & Partial administrative support & Cell-level truth & baseline \\
+External benchmark & Table 5, Figure 4 & Do independent gridded products align structurally? & Structural plausibility & Ground truth & baseline \\
+Ablation & Table 6 & Which feature families dominate the baseline? & Dominant predictive structure and value of calibration & Feature-level causality & baseline \\
+Qualitative plausibility & Figure 5, Supplement S7 & Do curated cases remain urban-structurally plausible? & Plausibility and interpretability & Quantitative truth validation & baseline \\
+Interval coverage & Table 9, Figure 9 & Do proxy intervals contain retained proxy targets? & Bounded interval behavior & True census coverage & uncertainty \\
+Error-width alignment & Table 10, Figure 9 & Does higher uncertainty width align with higher proxy-target error? & Useful error signal in width & Full probabilistic calibration & uncertainty \\
+Confidence-band validation & Table 11, Figure 7 & Do bands separate uncertainty burden? & Interpretation support differentiation & Probability of correctness & uncertainty \\
+Hotspot stability & Table 12, Figure 10 & Are stable classes more stable than caution-heavy classes? & Screening reliability & Verified hotspot truth & uncertainty \\
+District interval evidence & Table 13 & Is district interval support fully available? & Partial after-aggregation support only & Solved district interval validation & uncertainty \\
+External disagreement alignment & Table 13 & Does uncertainty rise systematically with external disagreement? & Structural comparison context & Strong monotonicity claim or truth proof & uncertainty \\
+\bottomrule
+\end{longtable}
+\endgroup
+

@@ -1,0 +1,36 @@
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.08}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{L{0.15\textwidth} L{0.24\textwidth} L{0.10\textwidth} L{0.37\textwidth}}
+\caption{Frozen feature inventory grouped by family. The weak-target column indicates whether a feature participates directly in the default weak-label weighting scheme.}\label{tab:s5-feature-inventory}\\
+\toprule
+Family & Feature & Weak target & Frozen role \\
+\midrule
+\endfirsthead
+\toprule
+Family & Feature & Weak target & Frozen role \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Built form & Building\_Count & yes & count of intersecting building footprints within the grid cell \\
+Built form & Building\_Area & yes & total intersecting building footprint area \\
+Built form & Residential\_Area & yes & intersecting area of residential building types \\
+Built form & Commercial\_Area & no & intersecting area of commercial or office building types \\
+Built form & Retail\_Area & no & intersecting area of retail-oriented building types \\
+Built form & Public\_Area & no & intersecting area of public-service building types \\
+Built form & \shortstack[l]{Building\_With\\Levels\_Count} & no & number of buildings with observed level tags \\
+Built form & Mean\_Building\_Levels & no & mean observed building levels where level tags are present \\
+Floor area & Total\_Floor\_Area & yes & area weighted by observed or fallback building levels \\
+Transport & Road\_Length & yes & total intersecting road length in the grid cell \\
+Transport & Bus\_Stop\_Count & yes & count of intersecting bus-stop points \\
+POI/services & Park\_Area & no & total intersecting park area \\
+POI/services & Schools\_Count & yes & count of intersecting school or kindergarten points \\
+POI/services & Hospitals\_Count & yes & count of intersecting hospital or clinic points \\
+POI/services & Parks\_Shops\_Count & yes & combined count of parks and shop features used in the fixed stack \\
+POI/services & POI\_Access\_Index & no & inverse-distance access proxy to nearby OSM activity points \\
+Composite & Combined\_Index & yes & normalized aggregate index spanning major built-form, transport, park, and floor-area signals \\
+\end{longtable}
+\endgroup

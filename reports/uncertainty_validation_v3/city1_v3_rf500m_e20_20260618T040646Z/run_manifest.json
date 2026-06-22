@@ -1,0 +1,34 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "phase": "phase6_core_uncertainty_validation",
+  "created_at_utc": "2026-06-18T13:16:10.879105+00:00",
+  "features_dir": "data/processed/features_v2_batch1",
+  "totals_csv": "data/external/city_population_reference_v2.csv",
+  "city_status_csv": "data/external/city_status_registry_v2.csv",
+  "osm_summary_csv": "reports/osm_completeness_v2/osm_completeness_summary.csv",
+  "inference_root": "outputs/v3_uncertainty",
+  "hotspot_root": "reports/hotspot_prioritization_v3",
+  "output_root": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z",
+  "ensemble_size_for_loco_like": 5,
+  "rf_n_estimators_for_loco_like": 60,
+  "generated_outputs": {
+    "phase6_input_validation": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\phase6_input_validation.json",
+    "interval_coverage_weak_target": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\interval_coverage_weak_target.csv",
+    "error_uncertainty_alignment": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\error_uncertainty_alignment.csv",
+    "confidence_band_validation_summary": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\confidence_band_validation_summary.csv",
+    "hotspot_stability": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\hotspot_stability.csv",
+    "hotspot_stability_summary": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\hotspot_stability_summary.csv",
+    "uncertainty_fold_metrics": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\uncertainty_fold_metrics.csv",
+    "uncertainty_monotonicity": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\uncertainty_monotonicity.csv",
+    "uncertainty_diagnostics_loco_like": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\uncertainty_diagnostics_loco_like.csv",
+    "uncertainty_diagnostics_inference_only_proxy_check": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\uncertainty_diagnostics_inference_only_proxy_check.csv",
+    "uncertainty_monotonicity_metrics": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\uncertainty_monotonicity_metrics.json"
+  },
+  "generated_figures": [
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\figures\\interval_coverage_by_city.png",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\figures\\error_vs_relative_uncertainty.png",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\figures\\confidence_band_error_summary.png",
+    "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\uncertainty_validation_v3\\city1_v3_rf500m_e20_20260618T040646Z\\figures\\hotspot_stability_by_class.png"
+  ],
+  "blocker_notes": []
+}

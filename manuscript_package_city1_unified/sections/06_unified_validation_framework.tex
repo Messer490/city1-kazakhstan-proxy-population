@@ -1,0 +1,51 @@
+\section{Unified Validation Framework}
+
+City1 uses a unified validation framework because neither the deterministic baseline nor the uncertainty-aware extension can be justified by a single benchmark. Different evidence layers answer different questions, use different artifacts, and support different claim boundaries. Supplementary Tables~S1--S3 make this evidence logic explicit for the deterministic stage, the uncertainty-aware stage, and their combined interpretation. The key point is that validation here is not a single scorecard. It is a layered argument about what the framework supports, what it does not support, and why those boundaries matter.
+
+\subsection{Baseline surface credibility validation}
+
+The baseline surface credibility stack contains six major layers.
+
+Leave-one-city-out transfer testing asks whether the calibrated proxy baseline remains usable on unseen cities. This layer uses calibrated RMSE and calibrated $R^2$ across hold-out cities and supports a claim about cross-city transferability under data scarcity. It does not establish cell-level truth.
+
+Because the weak target is itself proxy-derived, LOCO testing should be read as a test of proxy-surface credibility and transferability, not as a hidden census-accuracy test. That distinction is essential to keep the framework honest.
+
+Spatial block cross-validation asks whether performance remains stable when local spatial leakage is restricted inside a city. This layer supports within-city robustness under stricter spatial separation. It does not answer the unseen-city transfer question.
+
+The grid benchmark compares 250 m, 500 m, and 1000 m operating resolutions. Its role is to justify the fixed 500 m production configuration rather than to imply that one grid size is universally optimal across all settings.
+
+OSM completeness is treated as an input-support layer rather than a performance metric. It supports interpretation context by indicating how much open-data support is available in each city. It does not directly validate population accuracy.
+
+District benchmark comparison aggregates the calibrated surface to available districts and compares those aggregates with district references where available. This layer supports partial internal administrative coherence after aggregation. It does not validate cell-level truth and is not uniformly strong across cities.
+
+The mixed district pattern is therefore not a problem to be swept aside. It is evidence about the claim boundary. Stronger rows show where the proxy surface remains coherent after aggregation; weaker rows show where the support is partial and where the reader should stop short of stronger claims.
+
+External structural comparison against WorldPop and GHS-POP evaluates Pearson correlation, Spearman correlation, top-decile overlap, and hotspot IoU. This layer supports structural plausibility from independent gridded products. It does not turn either external product into ground truth.
+
+WorldPop and GHS-POP are complementary rather than redundant. WorldPop is the stronger broad-correlation comparator, while GHS-POP is the stronger hotspot-sensitive comparator. The reason to keep both is not that one proves the model and the other fails; it is that each comparator illuminates a different aspect of the same proxy surface.
+
+Finally, ablation and qualitative plausibility add two complementary views. Ablation clarifies which feature families carry the dominant share of predictive structure and whether calibration materially improves the final output. Qualitative plausibility review checks whether curated hotspots and coldspots align with visible urban structure. Together they support bounded interpretability, not truth recovery.
+
+Taken together, the baseline layers answer different questions. Some layers support whether the model transfers. Some support whether the grid resolution is sensible. Some support whether the open-data evidence behaves coherently at district or city scale. Some support whether the resulting map is visually plausible. None of them alone proves truth, but together they make the proxy-surface claim credible enough to justify the second-stage interpretation layer.
+
+\subsection{Reliability-aware interpretation validation}
+
+The uncertainty-aware stage contains six additional validation layers.
+
+Interval coverage asks how often retained proxy targets fall within the P10--P90 range. This supports bounded interval behavior against weak or proxy targets. It does not support a claim about true census coverage.
+
+In other words, interval coverage is a behavior check, not a truth guarantee. It is useful because the reader can see whether the ensemble spread is at least directionally compatible with held-out proxy error, but it should not be promoted to full probabilistic calibration.
+
+Error-vs-uncertainty alignment asks whether cells with larger proxy-target error also tend to have larger uncertainty width. This supports a claim that uncertainty width carries meaningful error information. It does not establish full probabilistic calibration or a universal confidence ranking.
+
+District aggregation evidence asks whether district-level uncertainty support can be completed after aggregation. In the reference light package, true district interval coverage remains blocked because frozen district polygon/cell assignment artifacts are unavailable. What remains is partial administrative support after aggregation. This layer does not solve district interval validation.
+
+External disagreement alignment asks whether higher uncertainty coincides with larger disagreement against WorldPop and GHS-POP. This supports structural comparison context only. In the reference package, the alignment is mixed or negative and therefore cannot support a strong monotonicity claim.
+
+Hotspot stability asks whether stable classes remain substantially more stable than caution-heavy classes across the ensemble output. This is the strongest uncertainty evidence layer because it directly supports screening reliability. It still does not verify hotspot truth.
+
+This is why hotspot stability sits above interval coverage in the evidentiary hierarchy. Interval coverage tells us something about spread; hotspot stability tells us whether the screening categories are meaningfully separated in practice.
+
+Confidence-band validation asks whether high, medium, and low bands separate uncertainty burden in the expected direction. This supports bounded interpretive differentiation. It does not convert \texttt{confidence\_score} into a probability of correctness.
+
+Taken together, the validation framework is what makes the City1 paper a framework paper rather than a simple modeling note. Stage 1 provides the calibrated baseline and its structural credibility checks. Stage 2 provides the reliability-aware interpretation checks that prevent deterministic over-reading. Neither stage is sufficient alone for the final intended use of the system, and that dependency is the main reason the paper is structured as one integrated framework instead of two separate studies.

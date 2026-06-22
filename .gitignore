@@ -35,3 +35,12 @@ models/exports/
 
 .DS_Store
 Thumbs.db
+*.zip
+*.aux
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz

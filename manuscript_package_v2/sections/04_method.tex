@@ -42,7 +42,7 @@ To obtain a weak training target, the proxy score is combined with the official 
 
 A supervised regression model is trained to map cell-level features to the weak target surface. The role of the learning stage is not to discover a hidden census truth ex nihilo, but to learn a stable and transferable relationship between the open-data feature space and the weakly supervised proxy distribution.
 
-In the frozen v2 baseline, the selected production model is \emph{random forest}. This choice reflects the fixed evidence stack reported in the manuscript and is retained for the final production identity of the system. A linear \emph{ridge} baseline is evaluated as a comparator in the validation stage, but it is not used for the frozen production surface. The model is trained and evaluated strictly within the frozen v2 workflow so that all reported figures and tables remain traceable to the same reproducible package.
+In the frozen v2 baseline, the selected production model is \emph{random forest}. This choice reflects the fixed evidence stack reported in the manuscript and is retained for the final production identity of the system. A linear \emph{ridge} model is retained as a deliberately simple comparator in the validation stage, but it is not used for the production surface. In the implemented workflow, ridge uses the same feature columns, weak target, log-target transform, and city-total calibration logic as random forest, while being fit as a standardized linear pipeline with median imputation and a fixed $\alpha = 1.0$ penalty rather than as an exhaustively tuned linear model family. The models are therefore compared within the same data and calibration regime, so that all reported figures and tables remain traceable to a single reproducible package.
 
 \subsection{Calibration to Official City Totals}
 
@@ -60,7 +60,7 @@ The calibrated output is therefore interpreted as a \emph{proxy population surfa
 
 The final v2 system is intentionally frozen to avoid post hoc drift in claims or configuration during manuscript preparation. Its production identity is defined by three choices: \emph{random forest}, \emph{500 m} grid resolution, and \emph{calibrated-only} output. These settings are used consistently in the main narrative and serve as the reference point for the validation framework presented in the following sections.
 
-This frozen framing is central to the paper's contribution. City1 v2 is not introduced as a best-possible truth model, nor as a software demo centered on an interface. It is presented as a reproducible open-data baseline that combines weak supervision, official-total calibration, and multi-level validation for intra-urban analysis in data-scarce urban settings. In the manuscript package, the same frozen workflow is also responsible for the reported tables and figures, so that the narrative, quantitative results, and paper assets remain traceable to a single reproducible v2 evidence stack.
+This framing is central to the paper's contribution. City1 v2 is not introduced as a best-possible truth model, nor as a software demo centered on an interface. It is presented as a reproducible open-data baseline that combines weak supervision, official-total calibration, and multi-level validation for intra-urban analysis in data-scarce urban settings. In the manuscript package, the same workflow is also responsible for the reported tables and figures, so that the narrative, quantitative results, and paper assets remain traceable to a single reproducible v2 evidence stack.
 
 \begin{figure}[H]
 \centering

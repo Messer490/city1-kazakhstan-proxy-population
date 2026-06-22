@@ -1,0 +1,8 @@
+\section{City1 v2 Baseline Recap}
+
+City1 v2 is the deterministic baseline on which the current manuscript builds. The v2 workflow operates on a frozen 500 m grid, derives feature families from OpenStreetMap-built form, transport, and service context, constructs a weak target because true cell-level census labels are unavailable, trains a random forest as the main predictive model, and calibrates cell-level outputs to official city totals. The resulting surface is therefore an officially anchored proxy allocation rather than a true cell-level census reconstruction.
+
+That baseline matters for two reasons. First, it defines the scientific identity that v3 must preserve: proxy, not truth; official-total calibration; bounded claims; and explicit validation under missing cell-level truth. Second, it provides the deterministic reference surface that v3 seeks to interpret more carefully. City1 v3 does not replace the v2 logic with a new target definition or a new geographic scope. Instead, it wraps the same baseline idea with uncertainty intervals, confidence bands, and hotspot-screening logic so that the calibrated surface can be read with more discipline.
+
+The practical implication is straightforward. If v2 answers ``what calibrated proxy surface do we obtain from the frozen workflow?'', then v3 asks ``where does that proxy surface look more stable, where does it look less stable, and how should those differences affect screening-oriented use?'' This keeps the project scientifically continuous while expanding what the output can responsibly support.
+

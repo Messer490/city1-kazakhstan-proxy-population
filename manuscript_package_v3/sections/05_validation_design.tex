@@ -1,0 +1,28 @@
+\section{Validation Design}
+
+City1 v3 is not validated against cell-level census truth, because such labels are unavailable in the frozen workflow. The validation design therefore asks a narrower question: does the uncertainty layer behave in a meaningful and interpretable way inside the calibrated proxy-target framework? Supplementary Table~S1 summarizes the evidence logic.
+
+\subsection{Interval coverage against held-out proxy targets}
+
+The first layer checks how often proxy targets fall within the calibrated P10--P90 interval. Two protocols are retained in the frozen evidence package: a bounded LOCO-like reconstruction pass and an inference-only proxy check on the four freeze cities. This layer supports a bounded statement about interval behavior relative to weak or proxy targets. It does not support a claim about true census coverage.
+
+\subsection{Error-vs-uncertainty alignment}
+
+The second layer tests whether cells with larger proxy-target error also tend to have larger uncertainty width. In the frozen package, the strongest alignment signal comes from interval width rather than from relative uncertainty or confidence ordering. This layer supports the claim that width carries meaningful error information. It does not establish full probabilistic calibration or a universal ranking between confidence score and error.
+
+\subsection{District aggregation evidence}
+
+The third layer aggregates the proxy surface to districts where reference material exists. In the light package, frozen district polygon/cell assignment artifacts are unavailable, so true district interval coverage could not be completed. What remains is partial administrative aggregation support based on carried-forward district comparisons for Almaty, Astana, and Shymkent. This layer supports only a partial after-aggregation check. It does not solve district interval validation and does not imply cell-level administrative truth.
+
+\subsection{External disagreement alignment}
+
+The fourth layer compares City1 v3 structure against WorldPop and GHS-POP in aligned benchmark settings. The point is to assess whether higher uncertainty coincides with larger external disagreement. This layer supports structural comparison context. It does not treat WorldPop or GHS-POP as ground truth, and in the frozen evidence package the alignment is mixed or negative rather than strongly supportive.
+
+\subsection{Hotspot stability}
+
+The fifth layer measures how stable the hotspot classes are under the ensemble output. This is the strongest evidence layer in the package because it directly addresses the practical screening task: stable classes retain much higher mean stability metrics than caution-heavy classes. This layer supports screening reliability and class separation. It does not prove definitive population allocation.
+
+\subsection{Confidence-band validation}
+
+The final layer checks whether the frozen confidence bands separate uncertainty burden in the expected direction. High-confidence cells should carry lower relative uncertainty than low-confidence cells, while low-confidence cells should remain review-oriented. This layer supports interpretive differentiation within the proxy framework. It does not convert \texttt{confidence\_score} into a truth probability.
+

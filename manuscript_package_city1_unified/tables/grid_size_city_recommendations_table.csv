@@ -1,0 +1,4 @@
+city_name,place_name,recommended_cell_size_meters,benchmark_score,calibration_factor,calibration_distance_from_one,qa_warning_count,osm_warning_count,zones,runtime_seconds
+Almaty,"Almaty, Kazakhstan",500,0.3508606234230458,1.047772122950935,0.0466661223230469,0,0,3078,304.1945010999989
+Astana,"Astana, Kazakhstan",500,0.1790027434344791,1.116939860381392,0.1105926783344819,0,0,3473,68.41006509999715
+Semey,"Semey, Kazakhstan",500,0.2158529196463987,0.8777595877921547,0.1303825408463944,1,0,1033,35.470378800004255

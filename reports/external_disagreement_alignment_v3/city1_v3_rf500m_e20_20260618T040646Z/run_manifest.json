@@ -1,0 +1,16 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "phase": "phase6_external_disagreement_alignment",
+  "created_at_utc": "2026-06-18T13:16:11.386760+00:00",
+  "inference_root": "outputs/v3_uncertainty",
+  "external_report_root": "reports/external_benchmark_v2",
+  "output_root": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\external_disagreement_alignment_v3\\city1_v3_rf500m_e20_20260618T040646Z",
+  "cities": [
+    "almaty",
+    "astana",
+    "shymkent"
+  ],
+  "generated_outputs": {
+    "external_disagreement_alignment": "C:\\Users\\Asus\\Downloads\\City1-main\\City1-main\\reports\\external_disagreement_alignment_v3\\city1_v3_rf500m_e20_20260618T040646Z\\external_disagreement_alignment.csv"
+  }
+}

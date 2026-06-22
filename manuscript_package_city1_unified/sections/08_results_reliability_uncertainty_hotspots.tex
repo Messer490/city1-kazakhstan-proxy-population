@@ -1,0 +1,96 @@
+\section{Results II: Reliability, Uncertainty, and Hotspot Use}
+
+\subsection{City coverage and uncertainty outputs}
+
+The uncertainty-aware inference package covers Almaty, Astana, Semey, and Shymkent. By construction, the calibrated median surface sums to the official total in every city. What varies is the uncertainty burden and confidence structure. Almaty has the lowest median relative uncertainty (0.170) and the largest high-confidence share (22.9\%). Semey has the highest median relative uncertainty (0.349) but still retains a small high-confidence subset (3.4\%). Astana and Shymkent are more caution-heavy and retain no high-confidence share in the reference city summary.
+
+This city contrast is the first hint that Stage 2 is doing real interpretive work. The same calibrated proxy framework behaves differently depending on support conditions, and that difference is precisely what the uncertainty layer is designed to expose.
+
+\input{tables_tex/table7_uncertainty_city_coverage_summary.tex}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig2_uncertainty_output_example.png}
+\caption{Uncertainty output summary. Left: Almaty calibrated median proxy estimates against relative uncertainty. Right: median relative uncertainty by city. The figure shows that uncertainty burden varies within and across cities, but it does not estimate true census uncertainty.}
+\label{fig:uncertainty-output-unified}
+\end{figure}
+
+\subsection{Confidence-band distribution}
+
+Confidence bands separate stronger and weaker interpretation contexts across the four-city package. Almaty is the clearest high-confidence case. Semey retains only a small high-confidence share. Astana and Shymkent are dominated by medium and low bands. These bands are interpretation support classes, not correctness probabilities.
+
+The band separation is useful because it allows the same surface to be read differently in different cities without pretending that one summary number applies everywhere. This is the practical value of the confidence layer: it changes how the map should be used, even when the underlying median surface is unchanged.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig3_confidence_band_distribution.png}
+\caption{Confidence-band distribution by city. The figure highlights where the calibrated proxy surface can be read more assertively for screening and where it should be treated more cautiously.}
+\label{fig:confidence-distribution-unified}
+\end{figure}
+
+\subsection{Hotspot prioritization}
+
+Hotspot prioritization translates the uncertainty layer into a bounded practical use case. Almaty is the strongest stable hotspot-screening case, with 212 \texttt{high\_value\_high\_confidence} cells and 310 \texttt{medium\_value\_high\_confidence} cells. Semey is mixed, retaining a small stable high-value subset but also a larger caution-heavy tail. Astana and Shymkent are dominated by review-oriented classes.
+
+This is the clearest applied output of Stage 2. The framework is not saying that these are verified hotspots. It is saying that some hotspots are better supported for screening and triage than others, which is exactly the kind of distinction planners and analysts need when the evidence base is incomplete.
+
+\input{tables_tex/table8_hotspot_prioritization_summary.tex}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig4_hotspot_prioritization_by_city.png}
+\caption{Hotspot priority classes by city. Almaty concentrates the strongest stable hotspot support, whereas Astana and Shymkent are dominated by caution-oriented classes. These are screening classes rather than verified hotspot truth.}
+\label{fig:hotspot-priority-unified}
+\end{figure}
+
+\subsection{Interval coverage and error alignment}
+
+Interval coverage is mixed rather than uniformly strong. Under the bounded LOCO-like protocol, coverage ranges from 0.294 in Shymkent to 0.403 in Semey. Under the inference-only proxy check, it improves to 0.598 in Almaty, 0.613 in Astana, 0.692 in Semey, and 0.534 in Shymkent. This supports bounded interval usefulness, not full uncertainty calibration.
+
+The mixed coverage result is important because it keeps the paper honest. It shows that the ensemble spread is informative, but not enough on its own to justify a claim of fully calibrated uncertainty. This is why coverage remains secondary evidence rather than headline evidence.
+
+\input{tables_tex/table9_interval_coverage_summary.tex}
+
+Uncertainty width tracks proxy-target error positively across all retained city/protocol combinations, with Spearman correlations between 0.689 and 0.886. By contrast, relative-uncertainty ordering and confidence ordering remain mixed, so the broader confidence-error story should be stated cautiously.
+
+That mixed ordering is not a failure; it is a boundary condition. It tells us that the width signal is meaningfully aligned with error, but the rest of the confidence hierarchy is not uniformly monotonic. The manuscript should therefore claim directional usefulness, not perfect calibration.
+
+\input{tables_tex/table10_error_uncertainty_alignment_summary.tex}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig5_uncertainty_validation_summary.png}
+\caption{Summary of interval coverage and error-width alignment. Coverage is mixed across protocols, but uncertainty width carries meaningful positive alignment with proxy-target error.}
+\label{fig:uncertainty-validation-unified}
+\end{figure}
+
+\subsection{Confidence bands and hotspot stability}
+
+Where a high confidence band exists, it shows lower relative uncertainty than the low band. Almaty provides the clearest separation, from 0.044 in the high band to 0.396 in the low band. Semey also shows strong separation, from 0.061 to 0.593, despite its more mixed overall screening position.
+
+This is the cleanest confidence-band argument in the paper. It shows that the banding scheme is not decorative: it actually sorts cells by support level in a way that can be used for screening and prioritization.
+
+\input{tables_tex/table11_confidence_band_summary.tex}
+
+Hotspot stability is the strongest uncertainty evidence layer. Stable classes such as \texttt{high\_value\_high\_confidence} and \texttt{medium\_value\_high\_confidence} retain much higher mean stability metrics than caution-heavy classes. This is the clearest evidence that the uncertainty-aware stage does useful screening work rather than merely adding decorative interval columns.
+
+That makes hotspot stability the main Stage 2 takeaway. If a reviewer asks what the uncertainty layer actually adds, the answer is not “more numbers”; it is that the layer distinguishes stable screening candidates from review-heavy ones in a way that is internally coherent across the ensemble.
+
+\input{tables_tex/table12_hotspot_stability_summary.tex}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig6_hotspot_stability_summary.png}
+\caption{Hotspot stability summary by class. Stable classes retain much higher mean stability than caution-heavy classes, making hotspot stability the strongest evidence layer for the uncertainty-aware stage.}
+\label{fig:hotspot-stability-unified}
+\end{figure}
+
+\subsection{District and external uncertainty evidence}
+
+The remaining uncertainty evidence layers are informative mainly as limitations. District interval coverage remains partial because true district p10/p50/p90 testing is blocked by missing district polygon/cell assignment artifacts in the light package. External disagreement alignment against WorldPop and GHS-POP is mixed or negative, so the data do not support a strong claim that uncertainty rises systematically where external disagreement increases.
+
+These weaker layers do not invalidate Stage 2. They simply constrain it. They tell the reader that the uncertainty layer is best understood as a screening and interpretation layer, not as a full probabilistic truth model.
+
+\input{tables_tex/table13_district_external_uncertainty_limitations.tex}
+
+These are limitations, not fatal flaws. They narrow the claim boundary of the uncertainty-aware stage and reinforce that the correct interpretation is screening reliability rather than true uncertainty calibration.

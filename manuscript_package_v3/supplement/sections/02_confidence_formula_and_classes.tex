@@ -1,0 +1,26 @@
+\section{S2. Confidence Formula and Hotspot Classes}
+
+City1 v3 uses a bounded interpretation-confidence score rather than a probability of correctness. For cell $i$ in city $c$,
+\[
+\mathrm{confidence}_i =
+\operatorname{clip}\!\left(
+0.40\,s_i +
+0.25\,o_c +
+0.20\,e_i +
+0.15\,d_c, 0, 1
+\right),
+\]
+where
+\[
+s_i = 1 - \operatorname{clip}\!\left(
+\frac{r_i}{\max(q_{0.90}^{(c)},\epsilon)}, 0, 1
+\right),
+\qquad
+r_i = \frac{\mathrm{P90}_i - \mathrm{P10}_i}{\max(\mathrm{P50}_i,\epsilon)}.
+\]
+Here $o_c$ is the normalized OSM support score, $e_i$ is the best available external-agreement support term or a neutral fallback, and $d_c$ is the internal district-support term or a neutral fallback. The resulting score is thresholded as high ($\geq 0.70$), medium ($[0.40,0.70)$), or low ($< 0.40$).
+
+Supplementary Table~S2 records the frozen hotspot-class definitions used in the paper-facing package.
+
+\input{supplement/tables_tex/table_s2_hotspot_class_definitions.tex}
+

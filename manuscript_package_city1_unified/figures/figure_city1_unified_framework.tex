@@ -1,0 +1,32 @@
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  box/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=1.05cm, fill=blue!6, font=\scriptsize},
+  stage/.style={draw, rounded corners, dashed, inner sep=10pt},
+  arrow/.style={-Latex, thick}
+]
+\node[box, fill=yellow!12] (data) at (0,0) {Open-data features\\+ official totals};
+\node[box, fill=green!12] (weak) at (3.7,0) {Weak target\\construction};
+\node[box, fill=green!12] (det) at (7.4,0) {Deterministic\\proxy surface};
+\node[box, fill=green!12] (val1) at (11.1,0) {Stage 1 validation:\\LOCO, block CV, grid,\\district, external, ablation};
+
+\node[box, fill=orange!12] (ens) at (3.7,-3.0) {Calibrated ensemble\\members};
+\node[box, fill=orange!12] (int) at (7.4,-3.0) {P10 / P50 / P90\\width and rel.\ unc.};
+\node[box, fill=orange!12] (hot) at (11.1,-3.0) {Confidence bands\\+ hotspot classes};
+\node[box, fill=orange!12] (val2) at (14.8,-3.0) {Stage 2 validation:\\coverage, error-width,\\stability, limits};
+
+\node[box, fill=purple!10, minimum width=4.7cm] (future) at (7.4,-5.9) {Future tool-grounded\\interpretation layer};
+
+\draw[arrow] (data) -- (weak);
+\draw[arrow] (weak) -- (det);
+\draw[arrow] (det) -- (val1);
+\draw[arrow] (det) -- (ens);
+\draw[arrow] (ens) -- (int);
+\draw[arrow] (int) -- (hot);
+\draw[arrow] (hot) -- (val2);
+\draw[arrow, dashed] (val2) -- (future);
+
+\node[stage, fit=(data)(weak)(det)(val1), label=above:{\textbf{Deterministic calibrated proxy baseline}}] {};
+\node[stage, fit=(ens)(int)(hot)(val2), label=below:{\textbf{Uncertainty-aware interpretation layer}}] {};
+\node[align=center] at (7.4,-7.15) {Bounded identity: calibrated proxy surface + uncertainty-aware interpretation,\\not true census reconstruction and not true census uncertainty.};
+\end{tikzpicture}%
+}

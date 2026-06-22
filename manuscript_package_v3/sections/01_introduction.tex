@@ -1,0 +1,22 @@
+\section{Introduction}
+
+Intra-urban population surfaces are useful because many planning and analytic questions are spatial before they are causal. Service screening, hotspot-aware prioritization, exploratory comparison across neighborhoods, and first-pass city diagnostics often need a gridded view of where population is more likely to concentrate rather than only a single total for the whole city. Large-scale gridded population products and dasymetric approaches have shown the value of redistributing population counts with spatial covariates, especially where fine-grained census geography is limited or unevenly available \cite{Leyk2019,Mennis2009,Stevens2015}.
+
+At the same time, deterministic surfaces can be misleading in data-scarce settings. A map that assigns one number per cell can look equally trustworthy everywhere even when local evidence quality differs sharply across cities and within cities. This is a practical problem for proxy population work: when cell-level census labels are unavailable, analysts may still need a bounded screening layer, but they also need to know where the resulting surface is more stable and where it should be treated more cautiously.
+
+City1 v2 addressed the first half of this problem by building a calibrated proxy population surface for Kazakhstan from a frozen 500 m workflow with official-total calibration, OpenStreetMap-derived predictors, weak supervision, and multi-level validation. Its identity was explicit: proxy, not truth. That deterministic baseline remains useful, but it leaves open a second question that matters for reviewer scrutiny and downstream interpretation: how should users distinguish stronger and weaker parts of the calibrated proxy surface when cell-level truth is unavailable?
+
+City1 v3 is designed as a bounded extension rather than a scientific reset. It keeps the v2 calibrated proxy-surface identity and adds an uncertainty-aware interpretation layer around it. The goal is not to estimate true census uncertainty, and not to replace the v2 surface with a new task identity. The goal is to quantify how stable the proxy surface appears under a frozen ensemble configuration and to expose that stability through intervals, confidence bands, and hotspot classes that can support more careful screening.
+
+The contributions of City1 v3 are:
+
+\begin{itemize}
+\item uncertainty intervals for calibrated proxy population surfaces through ensemble-based P10/P50/P90 outputs;
+\item confidence bands for reliability-aware interpretation, with an explicit statement that \texttt{confidence\_score} is not a truth probability;
+\item hotspot prioritization that separates stable screening candidates from caution-heavy ones;
+\item a bounded uncertainty-validation stack covering interval behavior, error-width alignment, confidence-band separation, hotspot stability, district aggregation limits, and external structural comparison;
+\item a frozen paper-facing evidence package that makes all Phase 8 manuscript claims traceable to fixed tables, figures, manifests, and limitation files.
+\end{itemize}
+
+Under this framing, City1 v3 should be read as an uncertainty-aware screening and interpretation layer for data-scarce urban settings. Its strongest value is not that it proves true population uncertainty, but that it reduces deterministic over-reading of a calibrated proxy surface while preserving the transparency of the v2 baseline.
+

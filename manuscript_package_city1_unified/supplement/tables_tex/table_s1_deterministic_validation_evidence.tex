@@ -1,0 +1,27 @@
+\begingroup
+\small
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{L{0.14\textwidth} L{0.18\textwidth} L{0.16\textwidth} L{0.20\textwidth} L{0.22\textwidth}}
+\caption{Deterministic validation-evidence matrix for the unified City1 framework.}\label{tab:s1-deterministic-evidence}\\
+\toprule
+Validation layer & Question answered & Metric / artifact used & What it supports & What it does not support \\
+\midrule
+\endfirsthead
+\toprule
+Validation layer & Question answered & Metric / artifact used & What it supports & What it does not support \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+LOCO & Does the baseline transfer to unseen cities? & Calibrated RMSE and calibrated $R^2$ across hold-out cities & Cross-city transferability under data scarcity & Within-city local correctness or cell-level truth \\
+Spatial block CV & Does performance remain stable when local leakage is restricted? & Blocked within-city cross-validation metrics & Within-city robustness under stricter spatial separation & Transfer to unseen cities or truth validation \\
+Grid benchmark & Which operating resolution best balances detail and stability? & Benchmark score across 250 m, 500 m, and 1000 m grids & Fixed production choice for the main operating grid & A universal claim that one grid size is optimal in every setting \\
+OSM completeness & How much open-data support is available by city? & Completeness score, label, and zero-share diagnostics & Interpretation confidence and caution context & Predictive accuracy or validation against population truth \\
+District benchmark & Does the surface remain coherent after aggregation to available districts? & District-level Pearson and Spearman correlations & Partial internal administrative coherence where references exist & Cell-level truth validation or uniform reliability across cities \\
+External benchmark & Do independent products agree with broad structure or hotspots? & Pearson, Spearman, top-decile overlap, hotspot IoU & External structural plausibility from independent products & Ground-truth validation or proof that an external product is correct \\
+Ablation & Which feature families carry the dominant predictive structure? & LOCO RMSE and $R^2$ by ablation family & Role of built form, broader features, and calibration & Feature-level causality or a full explainability layer \\
+Qualitative plausibility & Do curated hotspot and coldspot cases look urban-structurally plausible? & Overview maps and detailed curated case panels & Map plausibility and urban-structural interpretation & Quantitative validation or census-equivalent truth claims \\
+\end{longtable}
+\endgroup
+

@@ -1,0 +1,11 @@
+city,confidence_band,n_cells,share_cells,median_relative_uncertainty,mean_uncertainty_width,mean_error_if_available,share_hotspot_priority_cells,interpretation_note
+Almaty,high,705,0.2290448343079922,0.0440263754919767,62.59051439149408,58.56632201977399,0.7404255319148936,High-confidence cells show the lowest uncertainty burden and are the best screening candidates.
+Almaty,low,336,0.1091617933723196,0.3956814562271931,69.12346977150189,32.09317343031462,0.9523809523809524,Low-confidence cells are review-oriented and should not be treated as firm operational targets.
+Almaty,medium,2037,0.6617933723196882,0.1896043372962107,101.1057017036656,30.22503136992719,0.0,Medium-confidence cells dominate the practical baseline and should be interpreted as bounded screening support.
+Astana,low,1260,0.3627987330837892,0.4234327736938558,122.08255485679082,41.649708354714384,0.5650793650793651,Low-confidence cells are review-oriented and should not be treated as firm operational targets.
+Astana,medium,2213,0.6372012669162108,0.2172437280161315,92.02131709523948,35.056166968018786,0.0,Medium-confidence cells dominate the practical baseline and should be interpreted as bounded screening support.
+Semey,high,35,0.0338818973862536,0.0607129968686254,35.16771823318668,73.73211447654076,0.4,High-confidence cells show the lowest uncertainty burden and are the best screening candidates.
+Semey,low,175,0.1694094869312681,0.5928524931311375,97.38933331218736,20.857682307012464,0.8857142857142857,Low-confidence cells are review-oriented and should not be treated as firm operational targets.
+Semey,medium,823,0.7967086156824782,0.3158992886145421,93.0854164887884,21.211558779742678,0.0,Medium-confidence cells dominate the practical baseline and should be interpreted as bounded screening support.
+Shymkent,low,1487,0.3010730917189714,0.3084387626514596,24.816763576704925,9.025122368348194,0.8446536650975117,Low-confidence cells are review-oriented and should not be treated as firm operational targets.
+Shymkent,medium,3452,0.6989269082810285,0.1189148422148275,31.370682577852392,13.07542308338303,0.0,Medium-confidence cells dominate the practical baseline and should be interpreted as bounded screening support.

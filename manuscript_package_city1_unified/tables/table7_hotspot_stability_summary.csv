@@ -1,0 +1,12 @@
+city,hotspot_priority_class,n_cells,mean_stability_metric,median_relative_uncertainty,mean_confidence_score,interpretation_note
+Almaty,high_value_high_confidence,212,0.7767813718023967,0.0440385123591445,0.7383821903777228,Stable hotspot classes retain stronger confidence/stability behavior than caution classes.
+Almaty,low_value_high_uncertainty,320,0.263289198002448,0.3976155317513816,0.3910857176408132,Caution-oriented hotspot classes remain less stable and should not be treated as firm planning targets.
+Almaty,medium_value_high_confidence,310,0.7836206250770206,0.0369318836854121,0.7448969932162238,Stable hotspot classes retain stronger confidence/stability behavior than caution classes.
+Astana,high_value_low_confidence,4,0.2187081093637071,0.3694116094635478,0.3539109073104821,Caution-oriented hotspot classes remain less stable and should not be treated as firm planning targets.
+Astana,low_value_high_uncertainty,708,0.1763044609100759,0.4234208208180672,0.3275419165973653,Caution-oriented hotspot classes remain less stable and should not be treated as firm planning targets.
+Semey,high_value_high_confidence,4,0.8338184317320081,0.0762320889860017,0.7106817542060146,Stable hotspot classes retain stronger confidence/stability behavior than caution classes.
+Semey,high_value_low_confidence,19,0.1971115213541338,0.5902882680492008,0.3690679044510764,Caution-oriented hotspot classes remain less stable and should not be treated as firm planning targets.
+Semey,low_value_high_uncertainty,136,0.2918298176053206,0.6033868429590297,0.3685932192305171,Caution-oriented hotspot classes remain less stable and should not be treated as firm planning targets.
+Semey,medium_value_high_confidence,10,0.8249449388819603,0.0646010091088397,0.7166566141581523,Stable hotspot classes retain stronger confidence/stability behavior than caution classes.
+Shymkent,high_value_low_confidence,89,0.2250847151786014,0.2724738674372904,0.3542944088913727,Caution-oriented hotspot classes remain less stable and should not be treated as firm planning targets.
+Shymkent,low_value_high_uncertainty,1167,0.1998342229607689,0.3165871627043941,0.3211064497744672,Caution-oriented hotspot classes remain less stable and should not be treated as firm planning targets.

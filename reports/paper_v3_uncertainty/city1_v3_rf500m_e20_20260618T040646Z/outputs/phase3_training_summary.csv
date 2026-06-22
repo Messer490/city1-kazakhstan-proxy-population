@@ -1,0 +1,2 @@
+run_id,model_version,ensemble_size,training_city_count,training_row_count,included_cities,skipped_file_count,warning_count
+city1_v3_rf500m_e20_20260618T040646Z,city1_v3_rf500m_uncertainty,20,8,16132,"almaty, astana, petropavlovsk, semey, shymkent, taraz, uralsk, ust kamenogorsk",0,0

@@ -1,0 +1,78 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "created_at_utc": "2026-06-18T04:11:11.630015+00:00",
+  "git_commit": "92cc78d7880af1388fcbf3a5d7aa8db57c5c4512",
+  "python_version": "3.10.7",
+  "package_versions": {
+    "numpy": "1.26.4",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.4.2",
+    "joblib": "1.4.2",
+    "geopandas": "0.14.3"
+  },
+  "feature_input_paths": [
+    "data\\processed\\features_v2_batch1\\almaty.csv",
+    "data\\processed\\features_v2_batch1\\astana.csv",
+    "data\\processed\\features_v2_batch1\\petropavlovsk.csv",
+    "data\\processed\\features_v2_batch1\\semey.csv",
+    "data\\processed\\features_v2_batch1\\shymkent.csv",
+    "data\\processed\\features_v2_batch1\\taraz.csv",
+    "data\\processed\\features_v2_batch1\\uralsk.csv",
+    "data\\processed\\features_v2_batch1\\ust_kamenogorsk.csv"
+  ],
+  "official_totals_path": "data\\external\\city_population_reference_v2.csv",
+  "city_registry_path": "data\\external\\city_status_registry_v2.csv",
+  "training_cities": [
+    "almaty",
+    "astana",
+    "petropavlovsk",
+    "semey",
+    "shymkent",
+    "taraz",
+    "uralsk",
+    "ust kamenogorsk"
+  ],
+  "ensemble_size": 20,
+  "random_seeds": [
+    42,
+    1051,
+    2060,
+    3069,
+    4078,
+    5087,
+    6096,
+    7105,
+    8114,
+    9123,
+    10132,
+    11141,
+    12150,
+    13159,
+    14168,
+    15177,
+    16186,
+    17195,
+    18204,
+    19213
+  ],
+  "calibration_logic": "Official city totals anchor weak-target construction and remain mandatory in the frozen v3 path.",
+  "known_limitations": [
+    "Proxy, not truth: the ensemble expresses model/evidence uncertainty around a calibrated proxy surface.",
+    "No city-specific external alignment scores are embedded at training time.",
+    "District interval coverage is not part of the Phase 3 training artifact itself."
+  ],
+  "smoke_flag": false,
+  "model_version": "city1_v3_rf500m_uncertainty",
+  "rf_n_estimators": 150,
+  "rf_min_samples_leaf": 2,
+  "model_name": "random_forest_uncertainty",
+  "generated_files": [
+    "ensemble_model.joblib",
+    "ensemble_config.json",
+    "training_summary.csv",
+    "feature_schema.json",
+    "city_registry_snapshot.csv",
+    "run_manifest.json",
+    "member_manifest.csv"
+  ]
+}

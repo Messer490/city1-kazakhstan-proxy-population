@@ -45,6 +45,7 @@ class ExternalBenchmarkConfig:
     city_slug_to_name: Mapping[str, str] = None  # type: ignore[assignment]
     city_slug_to_ghs_tiles: Mapping[str, tuple[str, ...]] = None  # type: ignore[assignment]
     city1_population_column: str = "Population_Estimate_Final"
+    city1_model_suffix: str = "random_forest"
     top_decile_fraction: float = 0.10
     rasterize_all_touched: bool = True
 
@@ -98,8 +99,8 @@ def _safe_slug(text: str) -> str:
     return normalized.replace(" ", "_") or "city"
 
 
-def _resolve_city_geojson(inference_runs_dir: Path, city_slug: str) -> Path:
-    candidates = sorted(inference_runs_dir.glob(f"{city_slug}*__random_forest.geojson"))
+def _resolve_city_geojson(inference_runs_dir: Path, city_slug: str, model_suffix: str) -> Path:
+    candidates = sorted(inference_runs_dir.glob(f"{city_slug}*__{model_suffix}.geojson"))
     if not candidates:
         raise FileNotFoundError(
             f"No inference GeoJSON was found for city slug {city_slug!r} under {inference_runs_dir}."
@@ -107,10 +108,16 @@ def _resolve_city_geojson(inference_runs_dir: Path, city_slug: str) -> Path:
     return candidates[0]
 
 
-def _load_city1_surface(city_slug: str, inference_runs_dir: Path, population_column: str):
+def _load_city1_surface(
+    city_slug: str,
+    inference_runs_dir: Path,
+    population_column: str,
+    *,
+    model_suffix: str,
+):
     import geopandas as gpd
 
-    geojson_path = _resolve_city_geojson(inference_runs_dir, city_slug)
+    geojson_path = _resolve_city_geojson(inference_runs_dir, city_slug, model_suffix=model_suffix)
     gdf = gpd.read_file(geojson_path)
     required = {"Zone_ID", "latitude", "longitude", population_column, "city_name"}
     missing = required.difference(gdf.columns)
@@ -283,6 +290,7 @@ def build_city_external_benchmark_alignment(
         city_slug,
         pipeline_config.inference_runs_dir,
         population_column=pipeline_config.city1_population_column,
+        model_suffix=pipeline_config.city1_model_suffix,
     )
 
     worldpop_paths = [pipeline_config.worldpop_raster]

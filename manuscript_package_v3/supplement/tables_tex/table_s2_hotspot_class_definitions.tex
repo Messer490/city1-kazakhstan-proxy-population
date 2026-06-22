@@ -1,0 +1,18 @@
+\begin{table}[H]
+\centering
+\small
+\caption{Frozen hotspot-class definitions used in the City1 v3 paper-facing package.}
+\label{tab:s2-hotspot-classes}
+\begin{tabular}{p{3.2cm}p{5.2cm}p{5.2cm}}
+\toprule
+Class & Operational definition & Interpretation rule \\
+\midrule
+\texttt{high\_value\_high\_confidence} & Top decile by calibrated P50 within city and confidence band = high & Strongest screening candidate; not verified census truth \\
+\texttt{high\_value\_low\_confidence} & Top decile by calibrated P50 within city and confidence band = low & Potentially important hotspot that remains review-oriented \\
+\texttt{medium\_value\_high\_confidence} & P50 between city P75 and P90 with confidence band = high & Secondary stable screening candidate \\
+\texttt{low\_value\_high\_uncertainty} & Below city median P50 with confidence band = low & Caution-heavy class; not a firm planning target \\
+\texttt{not\_priority} & All remaining cells & Background class outside the prioritization focus \\
+\bottomrule
+\end{tabular}
+\end{table}
+

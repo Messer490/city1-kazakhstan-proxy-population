@@ -1,0 +1,22 @@
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{District and external uncertainty evidence retained in the reference package. These layers are informative mainly as context and limitation evidence rather than as strong validation support.}
+\label{tab:district-external-uncertainty-unified}
+\begin{tabular}{p{2.6cm}p{2.2cm}p{1.2cm}p{3.1cm}p{5.1cm}}
+\toprule
+Evidence layer & Scope & Status & Available result & Limitation for interpretation \\
+\midrule
+District interval coverage & Almaty & partial & compared = 6; mean abs.\ error p50 = 94209.1 & True district p10/p50/p90 coverage remains blocked because frozen district polygon/cell assignments are missing. \\
+District interval coverage & Astana & partial & compared = 5; mean abs.\ error p50 = 169626.3 & Treat only as partial administrative support after aggregation. \\
+District interval coverage & Shymkent & partial & compared = 3; mean abs.\ error p50 = 108862.2 & Does not provide district interval validation or cell-level truth. \\
+External disagreement alignment & Almaty / WorldPop & mixed & Spearman(disagreement, uncertainty) = -0.299 & External products provide structural comparison context, not ground truth. \\
+External disagreement alignment & Almaty / GHS-POP & mixed & Spearman(disagreement, uncertainty) = -0.494 & Mixed or negative alignment does not support strong monotonicity claims. \\
+External disagreement alignment & Astana / WorldPop & mixed & Spearman(disagreement, uncertainty) = -0.188 & Structural benchmark only. \\
+External disagreement alignment & Astana / GHS-POP & mixed & Spearman(disagreement, uncertainty) = -0.251 & Structural benchmark only. \\
+External disagreement alignment & Shymkent / WorldPop & mixed & Spearman(disagreement, uncertainty) = -0.422 & Structural benchmark only. \\
+External disagreement alignment & Shymkent / GHS-POP & mixed & Spearman(disagreement, uncertainty) = -0.451 & Structural benchmark only. \\
+\bottomrule
+\end{tabular}
+\end{table}
+

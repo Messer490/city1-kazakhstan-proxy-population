@@ -1,0 +1,39 @@
+\section{Limitations}
+
+\subsection{Missing cell-level census truth}
+
+The fundamental limitation of the framework is unchanged across both stages: true cell-level census labels are unavailable. The baseline surface is therefore a calibrated proxy surface rather than a reconstruction of observed population counts per cell.
+
+\subsection{Weak and proxy target limitation}
+
+The deterministic stage relies on weak supervision, and much of the uncertainty-aware stage is validated against weak or proxy targets rather than observed cell-level census labels. This is a real scientific boundary and cannot be removed rhetorically. The weak target is a structured proxy allocation, not a hidden supervised truth, so some circularity is inherent to the design. The paper accepts that circularity only because it is explicit about the proxy framing and never claims to have recovered hidden census labels.
+
+\subsection{OSM quality variation}
+
+The feature layer depends on variable OSM quality across cities. The framework tracks completeness explicitly, but differences in open-data support still affect how strongly some results can be interpreted, especially for qualitative reading and reliability-aware screening.
+
+\subsection{Partial district validation and district interval limits}
+
+District comparison remains partial in both stages. In the deterministic stage, district evidence is heterogeneous across cities and should be read as partial administrative support after aggregation. In the uncertainty-aware stage, true district interval coverage remains blocked in the light package because district polygon/cell assignment artifacts are unavailable.
+
+\subsection{External products are structural comparators, not truth}
+
+WorldPop and GHS-POP are useful structural comparators for broad agreement and hotspot-sensitive agreement, but they are not treated as cell-level ground truth. Mixed or negative external disagreement alignment in the uncertainty-aware stage therefore constrains claims without converting the comparison into a failure against truth.
+
+\subsection{Confidence score is not probability}
+
+\texttt{confidence\_score} is an interpretation-confidence score, not a probability of correctness. Likewise, P10/P50/P90 are proxy uncertainty intervals, not true census-uncertainty intervals.
+
+\subsection{Bounded LOCO-like uncertainty validation}
+
+The held-out LOCO-like uncertainty evidence was produced in a bounded local configuration with 5 ensemble members and 60 trees per member rather than with the full 20-member inference package. This evidence remains useful but should not be overstated.
+
+This limitation matters because it keeps the uncertainty claims bounded to the evaluation setup actually run. The runtime package is larger, but the held-out evidence used to support the manuscript is intentionally narrower and should be interpreted accordingly.
+
+\subsection{No definitive administrative accounting or fully automated operational decisions}
+
+The framework supports screening, interpretation, and exploratory prioritization. It does not support definitive fine-scale administrative accounting and should not be used as a fully automated decision system.
+
+\subsection{No claim of true census reconstruction or true census uncertainty}
+
+The central claim boundary of the paper is therefore deliberate. City1 does not reconstruct true cell-level census counts and does not estimate true census uncertainty. It provides an officially calibrated proxy surface together with a reliability-aware interpretation layer under missing cell-level truth.

@@ -1,0 +1,9 @@
+protocol,city,n_cells,coverage_p10_p90,below_p10_share,above_p90_share,median_relative_uncertainty,interpretation_note
+locov_like,Almaty,3078,0.3512020792722547,0.2189733593242365,0.4298245614035088,0.151541315564136,locov_like coverage is weak in held-out proxy terms and should not be oversold.
+locov_like,Astana,3473,0.3054995680967463,0.1243881370572991,0.5701122948459545,0.130254303493582,locov_like coverage is weak in held-out proxy terms and should not be oversold.
+locov_like,Semey,1033,0.4027105517909003,0.3697967086156825,0.2274927395934172,0.1738157093252708,locov_like coverage is weak in held-out proxy terms and should not be oversold.
+locov_like,Shymkent,4939,0.2937841668353917,0.5407977323344807,0.1654181008301275,0.1510987701580849,locov_like coverage is weak in held-out proxy terms and should not be oversold.
+inference_only_proxy_check,Almaty,3078,0.5977907732293697,0.2102014294996751,0.1920077972709551,0.1696593416621771,inference_only_proxy_check coverage is usable but mixed; the interval layer should be described cautiously.
+inference_only_proxy_check,Astana,3473,0.6130146847106248,0.1073999424128995,0.2795853728764756,0.2808163445048885,inference_only_proxy_check coverage is usable but mixed; the interval layer should be described cautiously.
+inference_only_proxy_check,Semey,1033,0.6921587608906099,0.2081316553727008,0.0997095837366892,0.3493186301151472,"inference_only_proxy_check coverage is moderate for a proxy-target setting, but still bounded by weak supervision."
+inference_only_proxy_check,Shymkent,4939,0.533711277586556,0.2725248025916177,0.1937639198218262,0.1752000865036412,inference_only_proxy_check coverage is usable but mixed; the interval layer should be described cautiously.

@@ -1,0 +1,56 @@
+\section{Deterministic Calibrated Proxy Surface Method}
+
+\subsection{Spatial grid and feature extraction}
+
+The first stage of City1 constructs a deterministic calibrated proxy population surface on a fixed 500 m grid. Each city is partitioned into regular grid cells, and all downstream feature aggregation, weak-target construction, learning, calibration, and validation are carried out at that spatial unit.
+
+Input features are derived from OpenStreetMap and grouped into interpretable urban proxy families. Built-form and floor-area variables provide proxies for horizontal and vertical development intensity, transport variables provide a coarse proxy for corridor structure and accessibility, and service or point-of-interest variables provide activity and amenity concentration context. These variables are not treated as direct census truth. They form the transparent open-data evidence layer on which the calibrated proxy surface is built.
+
+\subsection{Weak target construction}
+
+Because true cell-level census labels are unavailable, the deterministic stage uses weak supervision. Rather than training directly on observed population counts per cell, it first builds a proxy score intended to reflect relative intra-urban population concentration.
+
+Let $x_{ik}$ denote feature $k$ for cell $i$, and let $K$ denote the subset of weak-label features available in city $c$. In the reference workflow, negative values are clipped, features are log-transformed, and then min-max normalized before fixed weak-label weights are applied:
+\[
+s_i = \sum_{k \in K} w_k \cdot \mathrm{MinMax}\!\left(\log\!\left(1 + \max(x_{ik}, 0)\right)\right).
+\]
+
+To avoid zero-share collapse at allocation time, the proxy score is shifted by a small constant $\epsilon$ and converted into a city-wise allocation share:
+\[
+\tilde{s}_i = s_i + \epsilon,
+\qquad
+q_i = \frac{\tilde{s}_i}{\sum_{j \in c} \tilde{s}_j},
+\qquad
+y_i^{\mathrm{weak}} = q_i \cdot P_c,
+\]
+where $P_c$ is the official city total for city $c$. The resulting weak target is therefore an officially anchored proxy allocation, not an observed cell-level census label.
+
+This construction is intentionally circular in a limited sense, because the target inherits structure from the same proxy evidence that later enters the model. That circularity is acceptable only because the paper does not present the target as truth. Instead, the target is a transparent allocation device that tells the learning system how to distribute city mass across cells under a bounded proxy framework. In other words, the model is being asked to learn a calibrated proxy allocation pattern, not to rediscover hidden census truth.
+
+\subsection{Supervised learning on weak targets}
+
+The deterministic stage then learns a mapping from the OSM-derived feature space to the weak target surface. The main production model is Random Forest, while ridge regression is retained as a deliberately simple linear comparator within the same target and calibration regime. The purpose of the learning stage is not to recover hidden truth directly, but to learn a stable and transferable relationship between open-data urban structure and the weakly supervised proxy distribution.
+
+The model is trained on a calibrated proxy target, not on true cell-level census observations. This distinction is central to the framework and remains explicit throughout the manuscript. Validation against weak targets therefore supports proxy-surface credibility, not true population accuracy. The gain is methodological transparency: the framework tells the reader exactly which evidence was used to allocate city totals, and exactly how far that evidence can be trusted.
+
+\subsection{Random Forest production model and ridge comparator}
+
+The fixed production identity of the deterministic stage is Random Forest on the 500 m grid in calibrated-only mode. Ridge regression is retained as a baseline comparator because it provides a transparent contrast between a flexible non-linear model and a simple standardized linear model. In the reference workflow, ridge uses the same feature columns, the same weak target, the same log-target transform, and the same official-total calibration logic as Random Forest. The comparison therefore remains traceable to one coherent baseline stack rather than to unrelated model families.
+
+Ridge is not used as an exhaustive search over all possible linear alternatives. It is retained as a simple comparator that helps show why a non-linear learner is justified for urban proxy allocation. The point is not that ridge fails in a vacuum, but that the final production identity is more credible when the manuscript shows a transparent linear benchmark and then justifies why Random Forest is the stronger fixed configuration.
+
+\subsection{Calibration to official city totals}
+
+Raw model predictions are treated as relative cell-level outputs before final city-total anchoring. The deterministic surface is then calibrated so that the sum of all cells within a city matches the corresponding official total:
+\[
+\hat{y}_i^{\mathrm{cal}} = \hat{y}_i \cdot \frac{P_c}{\sum_{j \in c}\hat{y}_j}.
+\]
+If the within-city prediction sum is non-positive, the workflow falls back to a uniform allocation across the cells of that city so that calibration remains well defined even under degenerate raw output.
+
+Calibration guarantees city-level consistency, but it does not convert the output into cell-level census truth. The calibrated surface should therefore be interpreted as an officially constrained proxy population surface whose value lies in transparency, reproducibility, and bounded structural credibility.
+
+The calibration step is not a cosmetic post-processing detail. It is part of the scientific construction of the final product because it anchors the city-wide mass that the weak target was designed to distribute. The final output is therefore a learned allocation constrained by official totals, not an unconstrained prediction surface.
+
+\subsection{Fixed production identity}
+
+The deterministic stage is intentionally locked to three choices: Random Forest, 500 m grid resolution, and calibrated-only output. This fixed identity matters because it prevents post hoc drift in claims and ensures that the reported tables, figures, and narrative conclusions all refer to one consistent production configuration. In the unified framework, this deterministic stage is the stable calibrated baseline that the uncertainty-aware extension later interprets rather than replaces.

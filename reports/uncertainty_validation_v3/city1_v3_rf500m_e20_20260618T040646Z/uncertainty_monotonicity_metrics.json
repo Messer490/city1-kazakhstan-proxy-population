@@ -1,0 +1,7 @@
+{
+  "error_uncertainty_pearson": -0.006116310178326685,
+  "error_uncertainty_spearman": -0.3430701649934168,
+  "mean_abs_error_lowest_bucket": 107.0506052329743,
+  "mean_abs_error_highest_bucket": 18.193522915562074,
+  "monotonic_non_decreasing": 0.0
+}

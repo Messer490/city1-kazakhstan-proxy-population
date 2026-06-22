@@ -1,0 +1,31 @@
+{
+  "run_id": "city1_v3_rf500m_e20_20260618T040646Z",
+  "phase": "phase5_hotspot_prioritization",
+  "created_at_utc": "2026-06-18T05:19:22.494765+00:00",
+  "input_root": "/mnt/data/city1_phase5_work/outputs/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z",
+  "output_root": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z",
+  "cities": [
+    "almaty",
+    "astana",
+    "semey",
+    "shymkent"
+  ],
+  "top_n": 25,
+  "figures_enabled": true,
+  "generated_outputs": {
+    "hotspot_city_summary": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/hotspot_city_summary.csv",
+    "top_hotspots_by_city": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/top_hotspots_by_city.csv",
+    "caution_hotspots": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/caution_hotspots.csv",
+    "stable_hotspots": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/stable_hotspots.csv",
+    "hotspot_class_distribution_by_city": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/figures/hotspot_class_distribution_by_city.png",
+    "confidence_band_distribution_by_city": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/figures/confidence_band_distribution_by_city.png",
+    "almaty_p50_vs_relative_uncertainty": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/figures/almaty_p50_vs_relative_uncertainty.png",
+    "astana_p50_vs_relative_uncertainty": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/figures/astana_p50_vs_relative_uncertainty.png",
+    "semey_p50_vs_relative_uncertainty": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/figures/semey_p50_vs_relative_uncertainty.png",
+    "shymkent_p50_vs_relative_uncertainty": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/figures/shymkent_p50_vs_relative_uncertainty.png",
+    "hotspot_priority_scatter_by_city": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/figures/hotspot_priority_scatter_by_city.png",
+    "phase5_report": "/mnt/data/city1_phase5_work/reports/hotspot_prioritization_v3/city1_v3_rf500m_e20_20260618T040646Z/PHASE_5_HOTSPOT_PRIORITIZATION_REPORT.md"
+  },
+  "stable_hotspot_row_count": 536,
+  "caution_hotspot_row_count": 2443
+}
