@@ -21,6 +21,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from city1.llm_fallback import generate_fallback_response  # noqa: E402
+from city1.llm_guardrails import guard_response  # noqa: E402
 from city1.llm_tools import (  # noqa: E402
     RUN_ID,
     compare_cities,
@@ -51,6 +52,7 @@ STATE_DEFAULTS = {
     "selected_mode": "Generate City Brief",
     "selected_language": "English",
     "generated_report_md": "",
+    "last_guardrail": None,
 }
 
 
@@ -123,6 +125,7 @@ def build_markdown_report(
     city: str,
     mode: str,
     question: str,
+    guardrail_result: dict[str, Any] | None = None,
 ) -> str:
     """Build a downloadable report in memory without writing to the project."""
     evidence = response.get("evidence_used", [])
@@ -160,6 +163,26 @@ def build_markdown_report(
     if missing:
         lines.extend(["", "## Missing artifacts", ""])
         lines.extend(f"- `{item}`" for item in missing)
+    if guardrail_result:
+        guardrail = guardrail_result.get("guardrail", guardrail_result)
+        lines.extend([
+            "",
+            "## Guardrail check",
+            "",
+            f"- **Passed:** {guardrail.get('passed', False)}",
+            f"- **Severity:** {guardrail.get('severity', 'unknown')}",
+            f"- **Risk score:** {guardrail.get('risk_score', 'unknown')}",
+            f"- **Grounding score:** {guardrail.get('grounding_score', 'unknown')}",
+            f"- **Safe rewrite used:** {guardrail_result.get('used_safe_rewrite', False)}",
+        ])
+        violations = guardrail.get("violations", [])
+        if violations:
+            lines.extend(["", "### Detected violations", ""])
+            for item in violations:
+                lines.append(
+                    f"- `{item.get('category', 'UNKNOWN')}`: {item.get('matched_text', '')} — "
+                    f"{item.get('explanation', '')}"
+                )
     lines.extend([
         "",
         "## Scientific disclaimer",
@@ -282,6 +305,48 @@ def _render_response(st: Any, response: dict[str, Any]) -> None:
             st.markdown(f"- {item}")
 
 
+def _render_guardrail(st: Any, guarded: dict[str, Any]) -> None:
+    guardrail = guarded.get("guardrail", {})
+    severity = str(guardrail.get("severity", "none"))
+    passed = bool(guardrail.get("passed"))
+    rewritten = bool(guarded.get("used_safe_rewrite"))
+    grounding_score = guardrail.get("grounding_score", 0)
+
+    st.markdown("### Guardrail check")
+    status_columns = st.columns(4)
+    status_columns[0].metric("Status", "Passed" if passed else "Review required")
+    status_columns[1].metric("Severity", severity.title())
+    status_columns[2].metric("Grounding score", f"{grounding_score}/100")
+    status_columns[3].metric("Safe rewrite", "Used" if rewritten else "Not needed")
+
+    message = (
+        "Critical scientific overclaim detected. The displayed answer was replaced with conservative City1 wording."
+        if severity == "critical"
+        else "Scientific claim-boundary issues were detected. Review the violations below."
+    )
+    if severity == "critical":
+        st.error(message)
+    elif severity in {"medium", "high"}:
+        st.warning(message)
+    elif passed:
+        st.success("The response passed deterministic claim-boundary and evidence-grounding checks.")
+    else:
+        st.info("No forbidden phrase was found, but evidence grounding requires review.")
+
+    violations = guardrail.get("violations", [])
+    if violations:
+        with st.expander("Detected guardrail violations", expanded=True):
+            for item in violations:
+                st.markdown(f"**{item.get('category', 'UNKNOWN')}** — `{item.get('matched_text', '')}`")
+                st.caption(item.get("explanation", ""))
+                st.markdown(f"Safe alternative: `{item.get('safe_alternative', '')}`")
+    issues = guardrail.get("grounding_issues", [])
+    if issues:
+        with st.expander("Evidence-grounding issues", expanded=True):
+            for item in issues:
+                st.markdown(f"- {item}")
+
+
 def main() -> None:
     try:
         import pandas as pd
@@ -390,6 +455,7 @@ def main() -> None:
         st.session_state["last_response"] = None
         st.session_state["last_question"] = ""
         st.session_state["generated_report_md"] = ""
+        st.session_state["last_guardrail"] = None
         st.rerun()
 
     if generate_clicked:
@@ -408,13 +474,22 @@ def main() -> None:
                         cell_id=cell_id,
                         cities=compare_selection,
                     )
-                st.session_state["last_response"] = response
+                    response_for_guard = dict(response)
+                    if mode_key == "claim_checker":
+                        response_for_guard["claim_text_under_review"] = question
+                    guarded = guard_response(response_for_guard, language=language_code, auto_rewrite=True)
+                    final_response = dict(guarded["final_response"])
+                    final_response.pop("claim_text_under_review", None)
+                    guarded["final_response"] = final_response
+                st.session_state["last_response"] = final_response
+                st.session_state["last_guardrail"] = guarded
                 st.session_state["last_question"] = question
                 st.session_state["generated_report_md"] = build_markdown_report(
-                    response,
+                    final_response,
                     city=selected_city,
                     mode=st.session_state["selected_mode"],
                     question=question,
+                    guardrail_result=guarded,
                 )
             except Exception as exc:  # Keep the interface usable with partial local artifacts.
                 st.error(f"The local evidence engine could not complete this request: {exc}")
@@ -422,6 +497,9 @@ def main() -> None:
     response = st.session_state.get("last_response")
     if response:
         _render_response(st, response)
+        guarded = st.session_state.get("last_guardrail")
+        if guarded:
+            _render_guardrail(st, guarded)
         st.download_button(
             "Download Markdown report",
             data=st.session_state.get("generated_report_md", ""),
