@@ -49,7 +49,40 @@ class AppV4SmokeTests(unittest.TestCase):
         self.assertEqual(len(app_v4.MODE_LABEL_TO_KEY), 9)
         for mode in app_v4.MODE_LABEL_TO_KEY.values():
             with self.subTest(mode=mode):
-                self.assertGreater(len(app_v4._mode_help_text(mode)), 40)
+                self.assertGreater(len(app_v4._mode_help_text(mode)), 20)
+        self.assertEqual(
+            app_v4._mode_help_text("ask"),
+            "Answer a free-form question using City1 evidence.",
+        )
+        self.assertEqual(
+            app_v4._mode_help_text("reviewer_safe"),
+            "Generate conservative paper-safe wording.",
+        )
+
+    def test_how_to_use_card_contains_required_steps(self) -> None:
+        rendered = app_v4._how_to_use_html()
+        self.assertIn("How to use this interface", rendered)
+        for step in (
+            "Select a city.",
+            "Select a mode.",
+            "Choose provider: Local fallback or Gemini with fallback.",
+            "Click Generate answer.",
+            "Review Evidence used and Guardrail check.",
+        ):
+            self.assertIn(step, rendered)
+
+    def test_provider_and_cache_help_text_are_explicit(self) -> None:
+        self.assertEqual(
+            app_v4.PROVIDER_HELP_TEXT["Local fallback only"],
+            "Deterministic answer, no API needed.",
+        )
+        self.assertEqual(
+            app_v4.PROVIDER_HELP_TEXT["Gemini API with fallback"],
+            "Uses Gemini if available, otherwise deterministic fallback.",
+        )
+        self.assertIn("Cache stores only safe guardrail-approved answers", app_v4.CACHE_HELP_TEXT)
+        self.assertIn("Entries: 0 means no answer has been cached yet", app_v4.CACHE_HELP_TEXT)
+        self.assertIn("Repeat the same question to test cache hit", app_v4.CACHE_HELP_TEXT)
 
     def test_confidence_chart_is_lightweight_and_readable(self) -> None:
         chart = app_v4._confidence_band_chart_html({"High": 0.5, "Medium": 0.3, "Low": 0.2})
@@ -79,6 +112,8 @@ class AppV4SmokeTests(unittest.TestCase):
         self.assertIn("--city1-sidebar: #14343c", capture.content)
         self.assertIn("background: #ffffff !important", capture.content)
         self.assertIn("border-color: var(--city1-teal) !important", capture.content)
+        self.assertIn(".city1-help-card", capture.content)
+        self.assertIn(".city1-sidebar-help", capture.content)
         self.assertIn(".city1-footer", capture.content)
 
     def test_almaty_overview_uses_frozen_evidence(self) -> None:
@@ -106,6 +141,20 @@ class AppV4SmokeTests(unittest.TestCase):
         )
         self.assertTrue(response["fallback_used"])
         self.assertTrue(response["has_risk"])
+
+    def test_backend_wrapper_reviewer_safe_policy_answer_is_direct(self) -> None:
+        response = app_v4.run_local_assistant(
+            city="Almaty",
+            mode="Reviewer-Safe Answer",
+            language="English",
+            question="Can City1 v4 be used as official census evidence for policy decisions?",
+        )
+        answer = response["answer"]
+        self.assertIn("No.", answer)
+        self.assertIn("should not be used as official census evidence", answer)
+        self.assertIn("calibrated proxy", answer)
+        self.assertIn("not true cell-level census", answer)
+        self.assertEqual(response["mode"], "reviewer_safe")
 
     def test_gemini_provider_label_falls_back_without_key(self) -> None:
         response = app_v4.run_local_assistant(

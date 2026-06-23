@@ -490,6 +490,91 @@ def generate_city_comparison(cities: list[str] | None = None, language: str = "e
     )
 
 
+def generate_reviewer_safe_answer(
+    evidence_pack: dict[str, Any], question: str = "", language: str = "en"
+) -> dict[str, Any]:
+    """Generate a conservative reviewer-facing answer instead of reusing city-brief prose."""
+    language, fallback = _language(language)
+    city_summary = evidence_pack.get("city_summary", {})
+    city = city_summary.get("city") or evidence_pack.get("city")
+    support = city_summary.get("support_level", "unknown")
+    missing = _missing(evidence_pack)
+    lowered = str(question or "").strip().lower()
+    is_policy_census_question = any(
+        term in lowered
+        for term in (
+            "official census",
+            "census evidence",
+            "policy decision",
+            "policy decisions",
+            "official policy",
+            "policy",
+            "перепис",
+            "официаль",
+        )
+    )
+
+    if language == "ru":
+        summary = (
+            "Нет. City1 v4 не должен использоваться как official census evidence for policy decisions."
+            if is_policy_census_question
+            else "City1 v4 должен использоваться как reviewer-safe interpretation layer, а не как источник official census evidence."
+        )
+        evidence = [
+            "City1 v4 — это tool-grounded interpretation assistant.",
+            "Он объясняет calibrated proxy population surfaces и frozen V2/V3 reliability evidence.",
+            "Он может поддерживать screening, explanation, reviewer-facing interpretation и manual review.",
+            f"Current support level for {city or 'the requested city'}: {support}.",
+        ]
+        cautions = [
+            "City1 v4 не должен использоваться как official census evidence.",
+            "Он не восстанавливает true cell-level census counts.",
+            "Он не оценивает true census uncertainty.",
+            "Он не должен оправдывать automated policy decisions без external administrative review.",
+            "confidence_score — это interpretation support, а не probability of correctness.",
+            "hotspot_priority_class — это screening/triage class, а не verified hotspot truth.",
+            "WorldPop и GHS-POP — structural comparators, а не ground truth.",
+            "Reviewer-safe mode: mixed и unavailable evidence не интерпретируются как положительный результат.",
+        ]
+        next_checks = [
+            "Использовать City1 v4 только для bounded explanation, cautious screening и reviewer-facing interpretation.",
+            "Для policy use сохранять external administrative review и независимые локальные источники.",
+        ]
+    else:
+        summary = (
+            "No. City1 v4 should not be used as official census evidence for policy decisions."
+            if is_policy_census_question
+            else "City1 v4 should be used as a reviewer-safe interpretation layer, not as official census evidence."
+        )
+        evidence = [
+            "City1 v4 is a tool-grounded interpretation assistant.",
+            "It explains calibrated proxy population surfaces and frozen V2/V3 reliability evidence.",
+            "It can support screening, explanation, reviewer-facing interpretation, and manual review.",
+            f"Current support level for {city or 'the requested city'}: {support}.",
+        ]
+        cautions = [
+            "City1 v4 should not be used as official census evidence.",
+            "It is not true cell-level census evidence.",
+            "It does not reconstruct true cell-level census counts.",
+            "It does not estimate true census uncertainty.",
+            "It should not justify automated policy decisions without external administrative review.",
+            "confidence_score is interpretation support, not a probability of correctness.",
+            "hotspot_priority_class is a screening/triage class, not verified hotspot truth.",
+            "WorldPop and GHS-POP are structural comparators, not ground truth.",
+            "Reviewer-safe mode: mixed and unavailable evidence is not interpreted as positive evidence.",
+        ]
+        next_checks = [
+            "Use City1 v4 for bounded explanation, cautious screening, and reviewer-facing interpretation only.",
+            "For policy use, retain external administrative review and independent local evidence.",
+        ]
+
+    return _response(
+        mode="reviewer_safe", city=city, language=language, summary=summary, evidence=evidence,
+        cautions=cautions, next_checks=next_checks, evidence_used=_sources(evidence_pack),
+        missing_artifacts=missing, support_level=support, language_fallback=fallback,
+    )
+
+
 def check_text_for_overclaims(text: str, language: str = "en") -> dict[str, Any]:
     """Run a lightweight phrase-based pre-check; V4.6 will add full guardrails."""
     language, fallback = _language(language)
@@ -539,6 +624,8 @@ def check_text_for_overclaims(text: str, language: str = "en") -> dict[str, Any]
 
 
 def _generate_general_answer(pack: dict[str, Any], question: str, language: str, reviewer_safe: bool = False) -> dict[str, Any]:
+    if reviewer_safe:
+        return generate_reviewer_safe_answer(pack, question=question, language=language)
     lowered = question.lower()
     if any(term in lowered for term in ("uncertainty", "p10", "p50", "p90", "интервал", "неопредел")):
         result = generate_uncertainty_summary(pack, language)

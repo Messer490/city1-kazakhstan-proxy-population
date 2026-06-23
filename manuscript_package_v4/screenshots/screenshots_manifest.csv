@@ -1,0 +1,16 @@
+﻿filename,description
+01_v4_overview.png,V4 overview with city evidence overview and confidence-band distribution
+02_generate_city_brief_result.png,Generate City Brief answer panel
+03_generate_city_brief_guardrail.png,Generate City Brief claim boundaries cache and guardrail check
+04_ask_city1_assistant_result.png,Ask City1 Assistant free-form answer
+05_ask_city1_assistant_guardrail_cache.png,Ask City1 Assistant cache and guardrail section
+06_hotspot_review_result.png,Hotspot Review answer
+07_uncertainty_summary.png,Uncertainty Summary answer
+08_confidence_summary.png,Confidence Summary answer
+09_claim_checker_guardrail.png,Claim Checker critical guardrail detection
+09a_claim_checker_rewritten_answer_optional.png,Claim Checker safe rewritten answer
+10_compare_cities_result.png,Compare Cities answer
+11_compare_cities_evidence_table.png,Compare Cities evidence table and guardrail
+12_cache_hit.png,Cache hit and local retrieval demonstration
+14_reviewer_safe_answer_result.png,Reviewer-Safe Answer result
+15_reviewer_safe_guardrail_check.png,Reviewer-Safe guardrail check

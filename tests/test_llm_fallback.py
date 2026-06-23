@@ -16,6 +16,7 @@ from city1.llm_fallback import (  # noqa: E402
     generate_fallback_response,
     get_fallback_capabilities,
 )
+from city1.llm_guardrails import guard_response  # noqa: E402
 
 
 class LlmFallbackTests(unittest.TestCase):
@@ -76,6 +77,25 @@ class LlmFallbackTests(unittest.TestCase):
         result = generate_fallback_response(city="Almaty", mode="explain_cell")
         self.assertIn("not found", result["answer"])
         self.assertTrue(result["recommended_next_checks"])
+
+    def test_reviewer_safe_policy_question_uses_direct_conservative_answer(self) -> None:
+        question = "Can City1 v4 be used as official census evidence for policy decisions?"
+        result = generate_fallback_response(
+            city="Almaty",
+            mode="reviewer_safe",
+            question=question,
+        )
+        answer = result["answer"]
+        self.assertIn("No.", answer)
+        self.assertIn("should not be used as official census evidence", answer)
+        self.assertIn("calibrated proxy", answer)
+        self.assertIn("not true cell-level census", answer)
+        self.assertTrue(
+            "not automated policy decisions" in answer
+            or "not justify automated policy decisions" in answer
+        )
+        guarded = guard_response(result)
+        self.assertTrue(guarded["guardrail"]["passed"])
 
     def test_overclaim_checker_detects_dangerous_phrases(self) -> None:
         result = check_text_for_overclaims(

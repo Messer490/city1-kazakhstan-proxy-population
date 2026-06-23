@@ -59,16 +59,34 @@ STATE_DEFAULTS = {
 }
 
 MODE_HELP_TEXT = {
-    "ask": "Ask a bounded question about a city, method, uncertainty, hotspots, or scientific claim boundaries.",
-    "city_brief": "Generate a compact city brief from frozen coverage, confidence, uncertainty, and hotspot evidence.",
-    "hotspot_review": "Review stable and caution-heavy screening classes. Hotspots are not verified population truth.",
-    "uncertainty_summary": "Explain P10/P50/P90 and relative uncertainty as proxy ensemble spread, not census uncertainty.",
-    "confidence_summary": "Explain interpretation-confidence scores and bands. They are not probabilities of correctness.",
-    "compare_cities": "Compare support and reliability indicators without ranking true population accuracy.",
-    "explain_cell": "Explain one frozen grid cell using available proxy, interval, confidence, and evidence fields.",
-    "claim_checker": "Check a draft claim for overstatement and receive conservative replacement wording.",
-    "reviewer_safe": "Generate a compact answer with claim boundaries emphasized for manuscript or reviewer use.",
+    "ask": "Answer a free-form question using City1 evidence.",
+    "city_brief": "Create a compact city interpretation report.",
+    "hotspot_review": "Explain screening hotspot priority classes.",
+    "uncertainty_summary": "Explain P10/P50/P90 proxy intervals and uncertainty.",
+    "confidence_summary": "Explain confidence_score and confidence_band.",
+    "compare_cities": "Compare interpretation support across selected cities.",
+    "explain_cell": "Explain one grid cell if cell_id is available.",
+    "claim_checker": "Detect unsafe or overclaiming statements.",
+    "reviewer_safe": "Generate conservative paper-safe wording.",
 }
+
+PROVIDER_HELP_TEXT = {
+    "Local fallback only": "Deterministic answer, no API needed.",
+    "Gemini API with fallback": "Uses Gemini if available, otherwise deterministic fallback.",
+}
+
+CACHE_HELP_TEXT = (
+    "Cache stores only safe guardrail-approved answers. Entries: 0 means no answer has been cached yet. "
+    "Repeat the same question to test cache hit."
+)
+
+HOW_TO_USE_STEPS = (
+    "Select a city.",
+    "Select a mode.",
+    "Choose provider: Local fallback or Gemini with fallback.",
+    "Click Generate answer.",
+    "Review Evidence used and Guardrail check.",
+)
 
 
 def get_ordered_city_options() -> list[str]:
@@ -290,6 +308,17 @@ def _mode_help_text(mode: str) -> str:
     return MODE_HELP_TEXT.get(mode, MODE_HELP_TEXT["ask"])
 
 
+def _how_to_use_html() -> str:
+    """Render compact first-use guidance near the top of the interface."""
+    items = "".join(f"<li>{html.escape(step)}</li>" for step in HOW_TO_USE_STEPS)
+    return (
+        "<div class='city1-help-card'>"
+        "<div class='city1-help-title'>How to use this interface</div>"
+        f"<ol>{items}</ol>"
+        "</div>"
+    )
+
+
 def _confidence_band_chart_html(shares: dict[str, Any]) -> str:
     """Render a dependency-free, light-background confidence distribution."""
     colors = {"High": "#0b7a75", "Medium": "#d38b2c", "Low": "#b85c4b"}
@@ -436,6 +465,25 @@ def _render_style(st: Any) -> None:
             background: #eef8f6; border: 1px solid #c7e4df; border-left: 5px solid var(--city1-teal);
             color: var(--city1-ink); border-radius: 12px; padding: 1rem 1.15rem;
             margin: .8rem 0 1.25rem; line-height: 1.55; box-shadow: 0 5px 18px rgba(15,47,58,.05);
+        }
+        .city1-help-card {
+            background: #ffffff; border: 1px solid var(--city1-border); border-left: 5px solid #d39e00;
+            color: var(--city1-ink); border-radius: 14px; padding: 1rem 1.2rem;
+            margin: -.35rem 0 1.25rem; box-shadow: 0 8px 24px rgba(15,47,58,.06);
+        }
+        .city1-help-title {
+            font-size: .92rem; font-weight: 850; color: var(--city1-ink);
+            text-transform: uppercase; letter-spacing: .055em; margin-bottom: .45rem;
+        }
+        .city1-help-card ol { margin: .2rem 0 0 1.15rem; padding: 0; }
+        .city1-help-card li { margin: .18rem 0; line-height: 1.45; }
+        .city1-sidebar-help {
+            color: #eaf7f5; background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.16);
+            border-radius: 10px; padding: .65rem .75rem; margin: .35rem 0 .8rem;
+            font-size: .82rem; line-height: 1.45;
+        }
+        .city1-cache-help {
+            color: #f6fbfa; font-size: .8rem; line-height: 1.45; margin: .35rem 0 .65rem;
         }
         .city1-status-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
@@ -641,11 +689,22 @@ def main() -> None:
         custom_city = st.text_input("Custom city", value="") if use_custom_city else ""
 
         st.selectbox("Mode", options=list(MODE_LABEL_TO_KEY), key="selected_mode")
+        mode_key = MODE_LABEL_TO_KEY[st.session_state["selected_mode"]]
+        st.markdown(
+            f"<div class='city1-sidebar-help'><strong>Mode:</strong> "
+            f"{html.escape(_mode_help_text(mode_key))}</div>",
+            unsafe_allow_html=True,
+        )
         st.selectbox("Language", options=list(LANGUAGE_LABEL_TO_CODE), key="selected_language")
         st.selectbox(
             "Provider",
             options=["Local fallback only", "Gemini API with fallback"],
             key="selected_provider",
+        )
+        st.markdown(
+            f"<div class='city1-sidebar-help'><strong>Provider:</strong> "
+            f"{html.escape(PROVIDER_HELP_TEXT[st.session_state['selected_provider']])}</div>",
+            unsafe_allow_html=True,
         )
         gemini_status = get_gemini_status()
         if st.session_state["selected_provider"] == "Gemini API with fallback":
@@ -661,6 +720,10 @@ def main() -> None:
             unsafe_allow_html=True,
         )
         use_cache = st.checkbox("Use local cache", value=True)
+        st.markdown(
+            f"<div class='city1-cache-help'>{html.escape(CACHE_HELP_TEXT)}</div>",
+            unsafe_allow_html=True,
+        )
         use_retrieval = st.checkbox("Use City1 mini-RAG snippets", value=True)
         if st.button("Show cache status", use_container_width=True):
             st.session_state["show_cache_status"] = not st.session_state.get("show_cache_status", False)
@@ -672,7 +735,6 @@ def main() -> None:
                 f"Directory: {cache_status['cache_dir']}"
             )
 
-        mode_key = MODE_LABEL_TO_KEY[st.session_state["selected_mode"]]
         cell_id = None
         compare_selection: list[str] | None = None
         if mode_key == "explain_cell":
@@ -703,6 +765,7 @@ def main() -> None:
             "or reconstruct true cell-level census counts."
         )
     st.markdown(f"<div class='city1-notice'>{html.escape(notice)}</div>", unsafe_allow_html=True)
+    st.markdown(_how_to_use_html(), unsafe_allow_html=True)
 
     cached_response = st.session_state.get("last_response") or {}
     provider_display = cached_response.get("provider_used") or (
