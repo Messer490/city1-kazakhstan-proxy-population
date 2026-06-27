@@ -5,9 +5,11 @@ Figure~\ref{fig:city1-framework} shows the full City1 framework. Stage 1 builds 
 \begin{figure}[H]
 \centering
 \input{figures/figure_city1_unified_framework.tex}
-\caption{Unified City1 framework diagram. Stage 1 constructs and validates a deterministic calibrated proxy population surface under missing cell-level truth. Stage 2 extends that surface with calibrated ensemble intervals, confidence bands, and hotspot screening. A future tool-grounded interpretation layer is shown only as later work.}
+\caption{Unified City1 framework diagram. Stage 1 constructs and validates a deterministic calibrated proxy population surface under missing cell-level truth. Stage 2 extends that surface with calibrated ensemble intervals, confidence bands, and hotspot screening. Stage 3 then exposes the frozen evidence through a bounded tool-grounded interpretation and safety layer without altering the underlying population estimates.}
 \label{fig:city1-framework}
 \end{figure}
+
+Stage 3 remains subordinate to the scientific artifacts produced earlier in the framework. It consumes frozen calibrated and uncertainty-aware outputs through controlled tools, deterministic fallback generation, optional provider generation, cache support, and claim-boundary guardrails. Its role is evidence-linked explanation and reviewer-safe interpretation, not new estimation, not truth recovery, and not automated policy decision-making.
 
 \subsection{Ensemble Random Forest configuration}
 
@@ -68,7 +70,7 @@ Here $o_c$ is the OSM support score, $e_i$ is the best available external-suppor
 
 The framework is explicit about the meaning of this quantity: \texttt{confidence\_score} is an interpretation-confidence score, not a truth probability.
 
-Confidence bands are then simply ordinal wrappers around this score. They help separate stronger and weaker interpretation contexts, but they do not mean that a high-confidence cell is “correct” and a low-confidence cell is “incorrect.” The bands are screening aids, not correctness probabilities.
+Confidence bands are then simply ordinal wrappers around this score. They help separate stronger and weaker interpretation contexts, but they do not mean that a high-confidence cell is "correct" and a low-confidence cell is "incorrect." The bands are screening aids, not correctness probabilities.
 
 \subsection{Hotspot prioritization classes}
 

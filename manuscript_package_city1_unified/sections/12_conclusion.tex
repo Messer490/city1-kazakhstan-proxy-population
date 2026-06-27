@@ -1,6 +1,6 @@
 \section{Conclusion}
 
-City1 provides a reproducible calibrated and uncertainty-aware proxy population framework for intra-urban analysis in data-scarce Kazakhstan. The framework first constructs a deterministic calibrated proxy population surface from open data, weak supervision, Random Forest modeling, and official-total calibration. It then extends that surface with calibrated ensemble intervals, confidence bands, and hotspot-prioritization classes so that the output can be interpreted in a reliability-aware way rather than as uniformly trustworthy everywhere.
+City1 provides a reproducible calibrated, uncertainty-aware, and tool-grounded proxy population framework for intra-urban analysis in data-scarce Kazakhstan. The framework first constructs a deterministic calibrated proxy population surface from open data, weak supervision, Random Forest modeling, and official-total calibration. It then extends that surface with calibrated ensemble intervals, confidence bands, and hotspot-prioritization classes so that the output can be interpreted in a reliability-aware way rather than as uniformly trustworthy everywhere. A bounded Stage 3 layer then exposes those frozen artifacts through controlled tools, deterministic fallback generation, optional provider generation, cache support, and reviewer-safe guardrails without altering the underlying estimates.
 
 The central contribution is not a claim of exact cell-level reconstruction. It is a disciplined way to build a bounded proxy surface, validate it across multiple evidence layers, and then interpret its reliability in a way that prevents deterministic over-reading.
 
@@ -8,4 +8,4 @@ The deterministic stage shows that a calibrated proxy surface can be built and s
 
 Together, the two stages form one coherent framework. Stage 1 supplies the calibrated baseline; Stage 2 tells the reader how to read that baseline cautiously and where screening use is strongest. That combination is what makes City1 useful for exploratory planning, hotspot triage, and careful prioritization in data-scarce urban settings.
 
-The final contribution is therefore intentionally bounded but mature. City1 is not a true census reconstruction model and not a true census-uncertainty model. It is a transparent, reproducible, officially calibrated, and uncertainty-aware proxy framework for screening and interpretation under missing cell-level truth.
+The final contribution is therefore intentionally bounded but mature. City1 is not a true census reconstruction model, not a true census-uncertainty model, and not an automated policy engine. It is a transparent, reproducible, officially calibrated, uncertainty-aware, and tool-grounded proxy framework for screening and interpretation under missing cell-level truth.

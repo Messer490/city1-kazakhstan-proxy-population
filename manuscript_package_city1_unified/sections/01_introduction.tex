@@ -4,16 +4,17 @@ Spatially explicit intra-urban population surfaces are useful for service planni
 
 In Kazakhstan and similar contexts, this asymmetry is especially important. Official city totals may exist and can be verified, but fine-resolution cell-level truth is unavailable for direct supervised learning. At the same time, open geospatial data such as buildings, roads, and points of interest provide a reproducible but indirect description of the urban environment. These signals do not reveal the true population count in each cell, but they can support a bounded proxy modeling workflow when linked to official totals and explicit allocation logic.
 
-This problem has two linked parts. First, a reproducible calibrated proxy population surface must be constructed and validated under missing cell-level truth. Second, once that surface exists, users still need to know where it appears more stable and where it should be treated more cautiously. A deterministic surface that assigns one value per cell can otherwise encourage over-reading by making all cells look equally trustworthy. The scientific need is therefore not only for a calibrated proxy surface, but for a reliability-aware interpretation layer around that surface. Put differently, Stage 1 answers whether a bounded proxy surface can be built at all, while Stage 2 answers how that surface should be read once it exists.
+This problem has three linked parts. First, a reproducible calibrated proxy population surface must be constructed and validated under missing cell-level truth. Second, once that surface exists, users still need to know where it appears more stable and where it should be treated more cautiously. A deterministic surface that assigns one value per cell can otherwise encourage over-reading by making all cells look equally trustworthy. Third, if the resulting evidence is exposed through a language interface, that interface must remain tool-grounded, evidence-linked, and explicitly bounded rather than inventing unsupported claims. The scientific need is therefore not only for a calibrated proxy surface, but also for a reliability-aware interpretation layer around that surface and a controlled way to explain the frozen artifacts. Put differently, Stage 1 answers whether a bounded proxy surface can be built at all, Stage 2 answers how that surface should be read once it exists, and Stage 3 answers how the frozen evidence can be communicated safely.
 
-City1 addresses these two research questions as one framework paper:
+City1 addresses these research questions as one framework paper:
 
 \begin{itemize}
 \item \textbf{RQ1:} How can a reproducible calibrated proxy population surface be constructed under missing cell-level census truth?
 \item \textbf{RQ2:} Once such a proxy surface is constructed, how can uncertainty, confidence, and hotspot stability be represented so that users do not over-read deterministic cell-level patterns?
+\item \textbf{RQ3:} Once calibrated and uncertainty-aware artifacts are frozen, how can they be exposed through a tool-grounded interpretation layer without converting the system into a new estimator or a policy-automation engine?
 \end{itemize}
 
-The framework follows one mandatory transition logic. First, it constructs and validates a deterministic calibrated proxy surface under missing cell-level truth. Second, it extends this surface with uncertainty-aware interpretation, so that the output is not only spatially explicit but also reliability-aware.
+The framework follows one mandatory transition logic. First, it constructs and validates a deterministic calibrated proxy surface under missing cell-level truth. Second, it extends this surface with uncertainty-aware interpretation, so that the output is not only spatially explicit but also reliability-aware. Third, it exposes those frozen artifacts through a bounded tool-grounded layer for evidence-linked explanation, reviewer-safe wording, and cautious runtime interpretation.
 
 \paragraph{Unified contributions.}
 \begin{itemize}
@@ -21,6 +22,7 @@ The framework follows one mandatory transition logic. First, it constructs and v
 \item a multi-level validation stack for structural credibility under missing cell-level truth;
 \item an uncertainty-aware extension built from calibrated ensemble intervals, relative uncertainty, and bounded confidence bands;
 \item confidence-aware hotspot prioritization that separates stronger screening candidates from review-oriented ones;
+\item a tool-grounded interpretation layer built around read-only evidence access, deterministic fallback generation, optional provider generation, local cache support, and claim-boundary guardrails;
 \item an integrated evidence package in which figures, tables, formulas, limitations, and supplement material remain traceable to reference artifacts rather than to moving experimental targets.
 \end{itemize}
 
@@ -28,6 +30,6 @@ Table~\ref{tab:contribution-map} summarizes these contributions as one two-stage
 
 \input{tables_tex/table1_contribution_map.tex}
 
-The scientific identity of the paper is intentionally bounded. City1 does not reconstruct true cell-level census counts. It does not estimate true census uncertainty. Instead, it produces an officially calibrated proxy population surface and then adds a reliability-aware interpretation layer so that the resulting surface can be used more responsibly for screening and exploratory urban analysis. Within those bounds, the contribution is not merely a map. The contribution is a disciplined framework for producing, validating, and interpreting a calibrated proxy population surface under missing cell-level truth.
+The scientific identity of the paper is intentionally bounded. City1 does not reconstruct true cell-level census counts. It does not estimate true census uncertainty. The tool-grounded layer does not generate new population estimates and does not justify automated policy decisions. Instead, the framework produces an officially calibrated proxy population surface, adds a reliability-aware interpretation layer around that surface, and then exposes the frozen evidence through a controlled interpretation interface. Within those bounds, the contribution is not merely a map. The contribution is a disciplined framework for producing, validating, and interpreting a calibrated proxy population surface under missing cell-level truth.
 
-The rest of the manuscript follows this roadmap in order: Stage 1 constructs and validates the calibrated proxy baseline, Stage 2 explains how to interpret that baseline cautiously, and the discussion then connects the two stages into one coherent framework.
+The rest of the manuscript follows this roadmap in order: Stage 1 constructs and validates the calibrated proxy baseline, Stage 2 explains how to interpret that baseline cautiously, and the later sections then connect those scientific stages to a bounded tool-grounded interpretation layer.

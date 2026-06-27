@@ -12,6 +12,8 @@ The deterministic source package records commit \pathcode{92cc78d7880af1388fcbf3
 
 The uncertainty-aware reference run is \pathcode{city1_v3_rf500m_e20_20260618T040646Z}. Its paper-facing evidence package is retained under \pathcode{reports/paper_v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/}. The corresponding model artifacts are stored under \pathcode{models/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/}, and the city outputs are stored under \pathcode{outputs/v3_uncertainty/city1_v3_rf500m_e20_20260618T040646Z/}. The uncertainty paper-facing package records commit \pathcode{389a27d} in its freeze manifest.
 
+The tool-grounded interpretation layer is documented under \pathcode{manuscript_package_v4/}. Its evaluation artifacts are retained under \pathcode{reports/v4_llm_evaluation/}, and the runnable interface entry point is \pathcode{app_v4.py}. This layer consumes frozen artifacts and does not modify the calibrated or uncertainty-aware population outputs.
+
 For runtime and inference use, a separate runnable snapshot is archived as \pathcode{city1_runtime_package_20260622_061747.zip}. This runtime archive is distinct from the manuscript/evidence packages and is intended for execution-oriented reuse rather than manuscript provenance.
 
 Key external inputs are retained separately and remain subject to their original access conditions:
